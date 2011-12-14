@@ -4,7 +4,7 @@ Erik Adli, Dec 13 2011
 OVERVIEW :
 **********
 
-The main steps for running an QPIC job are :
+The main steps for running a QPIC job are :
   I) Prepare the input file  (rpinput)
  II) Run QPIC with the prepared input file on UCLA cluster
 III) Analyze the QPIC output
