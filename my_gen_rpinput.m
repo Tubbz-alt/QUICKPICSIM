@@ -1,6 +1,6 @@
 function my_gen_rpinput(myfilein, myfileout, Plasma_Density, plasma_Z, plasma_PREION, plasma_s_prop, beam_charge, beam_mean_E, beam_sigma_E_E, beam_sigma_x, beam_sigma_y, beam_sigma_z, beam_emitt_x, beam_emitt_y, BEAM_EV, beam_match, emitt_match, beam_z_pos, tilt_x, tilt_y, histZ, histZcount)
 
-working_dir = '/Users/eadli/Dropbox/SLAC/quickpic/myScripts/'; eval(['run ' working_dir 'my_SI_params.m']); % import my standard SI constants
+working_dir = '/Users/eadli/Dropbox/SLAC/quickpic/QUICKPICSIM/'; eval(['run ' working_dir 'my_SI_params.m']); % import my standard SI constants
 fun_dir = '/Users/eadli/Dropbox/SLAC/quickpic'; addpath(fun_dir);
 
 if( nargin < 17 )

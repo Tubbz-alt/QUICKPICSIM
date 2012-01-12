@@ -239,7 +239,7 @@ subplot(2,3,3);
 % fit gaussian to get std deviation of a gaussian distribution
 fit_X = XXz(n_bunch_qp, :);
 fit_Y = NNz(n_bunch_qp, :);
-save -mat ~/Dropbox/temp/fitfunc.dat fit_X fit_Y
+save -mat /tmp/fitfunc.dat fit_X fit_Y
 init_guess = [1e3 0 100e-6];
 result = fminsearch('mygaussfit2', init_guess);
 gauss_sigma_z(n_bunch_qp) = result(3)

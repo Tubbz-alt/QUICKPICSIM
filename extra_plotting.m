@@ -352,10 +352,23 @@ axis([0 80 myaxis(3) myaxis(4)]);
 
 end% if
 
+stop
+
+
 %
 % QP to ELE
 %
-% pp_qp = qp_BEAMS;
-% pp = my_qp2ele(pp_qp);
-% save -ascii -double ~/temp/dist_s50.asc pp
- 
+load /Users/eadli/Dropbox/SLAC/quickpic/myData/10mm_Dx0_LB_matched.mat
+charge = 3e-9; % NB: charge is not written/transferred!
+pp_qp = qp_BEAMS;
+filename = '/Users/eadli/Dropbox/SLAC/quickpic/myData/dist_ele.asc';
+my_write_qp2ele(pp_qp, filename);
+
+
+% analyse
+%  test: re-analyse same elegant beam with quickpic
+% 1) org qp beam
+[sigx, sigy, sigxp, sigyp, gauss_sigx, gauss_sigy, gauss_sigxp, gauss_sigyp, emnx, emny, betax, betay, alphax, alphay, muE, sigEE, corzp, corzx, corzy] = my_ana_beam(pp_qp)
+% 2) ele beam
+pp_qp2 = my_read_elefile2qp(filename);
+[sigx, sigy, sigxp, sigyp, gauss_sigx, gauss_sigy, gauss_sigxp, gauss_sigyp, emnx, emny, betax, betay, alphax, alphay, muE, sigEE, corzp, corzx, corzy] = my_ana_beam(pp_qp2)

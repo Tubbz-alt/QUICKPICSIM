@@ -1,6 +1,6 @@
 function S = mygaussfit2(params)
 
-load -mat ~/Dropbox/temp/fitfunc.dat
+load -mat /tmp/fitfunc.dat
 
 x = fit_X;
 y = fit_Y;

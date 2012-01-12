@@ -23,7 +23,7 @@ h_g = pcolor(xedges,yedges,histmat);
 shading('flat');
 dens_min = min(min(histmat));
 dens_max = max(max(histmat));
-caxis([dens_min dens_max/6]);
+caxis([dens_min dens_max/12]);
 if(do_cbar)
   h_c = colorbar;
   set(get(h_c,'ylabel'),'String', 'density  [a.u.]');
