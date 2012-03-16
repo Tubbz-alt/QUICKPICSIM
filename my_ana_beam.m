@@ -1,7 +1,7 @@
 %
 % quickpicsim_anabeam(beam, plot_vector, n_sigma) : general beam analysis function
 %
-% E. Adli, Jan 11, 2012
+% E. Adli, Jan 11,  2012
 %
 % input: 6x6 beam in quickpic (EA) format
 %   for elegant input: convert with for example my_ele2qp()
