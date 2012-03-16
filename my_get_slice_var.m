@@ -40,7 +40,7 @@ end% for
 slice_N_z = slice_N_z(1:length(n_slices));
 
 % calc' quantities per slice 
-n_slices(2)
+%n_slices(2)
 slice_mean(1) = mean(pp(1:n_slices(2), slice_var2));
 slice_sigma(1) = std(pp(1:n_slices(2), slice_var2));
 for n=2:length(n_slices),

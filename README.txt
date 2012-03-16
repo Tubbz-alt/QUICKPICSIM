@@ -108,6 +108,17 @@ a) Plot the stored field slice FEZ after the first saved time step :
 	pcolor(qp(1).FEZ')
 b) Get the stored sigma_x for timestep 2, beam 1
 	qp(2).PP(1).sigma_x
+c) Get the 6D phase space for timestep 1, bean :
+	qp(1).PP(1).BEAM
+The 6D phase space is stored in the following format :
+Col #	
+1	x  [um]
+2	y  [um]
+3	z  [um]
+4	x' [urad]
+5	y' [urad]
+6	E  [GeV]
+	
 
 Notes:
 1) The supported stored physical quantities for the moment are QEB, QEP, FEZ and beam phase space PHA-BEAM.  Other quantities can be easily added if needed.

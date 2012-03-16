@@ -16,41 +16,136 @@ rpinput_output_file =  [working_dir 'rpinput/rpinput'];
 %
 
 
+
 %
-%  example input - one beam gaussian
+% plasma ramp project
+%
+%
+%  1e17 / cm3
 %
 if(1)
 % S
-plasma_s_prop = 1.0; % [m]  - propagation length if the beam into the plasma
-plasma_density = 5.4e16; % /cm^3
+plasma_s_prop = 0.4; % [m]  - propagation length if the beam into the plasma
+plasma_density = 1.0e17; % /cm^3
 plasma_PREION=0; % 0 : non-ionized plasma 1: pre-ionized plasma
 plasma_Z = 3; % atomic number of plasma gas
 BEAM_EV=1; % 0 : calc wake only (single time-step):
            % assume: use 8 cores (express) when set to 0, 
            % and 128 cores when set to 1
-beam_match = 1; % 1: override sigma_x, sigma_y with matched counterparts, 0: do nothing
+beam_match = 0; % 1: override sigma_x, sigma_y with matched counterparts, 0: do nothing
 emitt_match =0; % 1: override emitt_x, emitt_y with matched counterparts, 0: do nothing
 mean_E = 39139*0.511*1e6; % beam mean energy [eV]
 sigma_E_E = 0; % 
 omega_p = sqrt(plasma_density*1e6* SI_e^2 /SI_em / SI_eps0);  % plasma frequency
 lambda_p = SI_c / omega_p * 2*pi; % plasma wavelength
-k_p = 2*pi/lambda_p;
-sigma_x = 20e-6;
+k_p = 2*pi/lambda_p
+lens_demag = 0.0879; % example
+lens_demag = 0.105217593817975;
+%lens_demag = 1;
+sigma_x = 20e-6*sqrt(lens_demag);
 sigma_y = sigma_x;
-sigma_z = 20e-6;
+sigma_z = 30e-6;
 % this following will enforce (close to) ideal density
 %k_p = sqrt(2) / sigma_z;
 %n0 = (k_p*SI_c)^2 * SI_em *SI_eps0 / SI_e^2  / 1e6;
 %plasma_density = n0;
 % 
-emitt_x = [300.0e-6];
-emitt_y = [30.0e-6];
+emitt_x = [350.36*1e-6];
+emitt_y = [350.36*1e-6*1e-1];
+emitt_y = [350.36*1e-6*1e-0];
 charge = 2e10*SI_e; % beam electron charge [C]
-tilt_angle = 0.0;
+tilt_angle = 0.00;
 tilt_x = [0 tilt_angle 0]';
 tilt_y = [0 0 0]';
 
-my_gen_rpinput(rpinput_template_file, rpinput_output_file, plasma_density, plasma_Z, plasma_PREION, plasma_s_prop, charge, mean_E, sigma_E_E, sigma_x, sigma_y, sigma_z, emitt_x, emitt_y, BEAM_EV, beam_match, emitt_match);
+my_gen_rpinput(rpinput_template_file, rpinput_output_file, plasma_density, plasma_Z, plasma_PREION, plasma_s_prop, charge, mean_E, sigma_E_E, sigma_x, sigma_y, sigma_z, emitt_x, emitt_y, BEAM_EV, beam_match, emitt_match, -1, tilt_x, tilt_y);
+end% if
+
+
+
+%
+%  3.6e17 / cm3 - full example (flat top + ramp)
+%
+if(1)
+% S
+plasma_s_prop = 0.50; % [m]  - propagation length if the beam into the plasma
+plasma_density = 3.6e17; % /cm^3
+plasma_PREION=0; % 0 : non-ionized plasma 1: pre-ionized plasma
+plasma_Z = 3; % atomic number of plasma gas
+BEAM_EV=1; % 0 : calc wake only (single time-step):
+           % assume: use 8 cores (express) when set to 0, 
+           % and 128 cores when set to 1
+beam_match = 0; % 1: override sigma_x, sigma_y with matched counterparts, 0: do nothing
+emitt_match =1; % 1: override emitt_x, emitt_y with matched counterparts, 0: do nothing
+mean_E = 39139*0.511*1e6; % beam mean energy [eV]
+sigma_E_E = 0; % 
+omega_p = sqrt(plasma_density*1e6* SI_e^2 /SI_em / SI_eps0);  % plasma frequency
+lambda_p = SI_c / omega_p * 2*pi; % plasma wavelength
+k_p = 2*pi/lambda_p
+lens_demag = 0.09
+%lens_demag = 1;
+sigma_x = 20e-6*sqrt(lens_demag);
+sigma_y = sigma_x;
+sigma_z = 30e-6;
+% this following will enforce (close to) ideal density
+%k_p = sqrt(2) / sigma_z;
+%n0 = (k_p*SI_c)^2 * SI_em *SI_eps0 / SI_e^2  / 1e6;
+%plasma_density = n0;
+% 
+emitt_x = [568.61*1e-6*1e-0];
+emitt_y = [568.61*1e-6*1e-0];
+charge = 2e10*SI_e; % beam electron charge [C]
+tilt_angle = 0.05;
+tilt_x = [0 tilt_angle 0]';
+tilt_y = [0 0 0]';
+
+my_gen_rpinput(rpinput_template_file, rpinput_output_file, plasma_density, plasma_Z, plasma_PREION, plasma_s_prop, charge, mean_E, sigma_E_E, sigma_x, sigma_y, sigma_z, emitt_x, emitt_y, BEAM_EV, beam_match, emitt_match, -1, tilt_x, tilt_y);
+end% if
+
+
+
+
+
+
+%
+%  example input - one beam gaussian
+%
+if(0)
+% S
+plasma_s_prop = 0.4; % [m]  - propagation length if the beam into the plasma
+plasma_density = 1.0e17; % /cm^3
+plasma_PREION=0; % 0 : non-ionized plasma 1: pre-ionized plasma
+plasma_Z = 3; % atomic number of plasma gas
+BEAM_EV=1; % 0 : calc wake only (single time-step):
+           % assume: use 8 cores (express) when set to 0, 
+           % and 128 cores when set to 1
+beam_match = 0; % 1: override sigma_x, sigma_y with matched counterparts, 0: do nothing
+emitt_match =0; % 1: override emitt_x, emitt_y with matched counterparts, 0: do nothing
+mean_E = 39139*0.511*1e6; % beam mean energy [eV]
+sigma_E_E = 0; % 
+omega_p = sqrt(plasma_density*1e6* SI_e^2 /SI_em / SI_eps0);  % plasma frequency
+lambda_p = SI_c / omega_p * 2*pi; % plasma wavelength
+k_p = 2*pi/lambda_p
+lens_demag = 0.0879; % example
+lens_demag = 0.105217593817975;
+%lens_demag = 1;
+sigma_x = 20e-6*sqrt(lens_demag);
+sigma_y = sigma_x;
+sigma_z = 30e-6;
+% this following will enforce (close to) ideal density
+%k_p = sqrt(2) / sigma_z;
+%n0 = (k_p*SI_c)^2 * SI_em *SI_eps0 / SI_e^2  / 1e6;
+%plasma_density = n0;
+% 
+emitt_x = [350.36*1e-6];
+emitt_y = [350.36*1e-6*1e-1];
+emitt_y = [350.36*1e-6*1e-0];
+charge = 2e10*SI_e; % beam electron charge [C]
+tilt_angle = 0.00;
+tilt_x = [0 tilt_angle 0]';
+tilt_y = [0 0 0]';
+
+my_gen_rpinput(rpinput_template_file, rpinput_output_file, plasma_density, plasma_Z, plasma_PREION, plasma_s_prop, charge, mean_E, sigma_E_E, sigma_x, sigma_y, sigma_z, emitt_x, emitt_y, BEAM_EV, beam_match, emitt_match, -1, tilt_x, tilt_y);
 end% if
 
 
@@ -61,7 +156,7 @@ end% if
 %
 if(0)
 % two-beam test
-plasma_s_prop = 0.8; % [m]  - plasma propagation length
+plasma_s_prop = 0.4; % [m]  - plasma propagation length
 plasma_density = 1e17; % /cm^3
 plasma_PREION=0; % 0 : non-ionized plasma (Nneutrals=1) 
 plasma_Z = 3; % atomic number of plasma gas
@@ -92,7 +187,7 @@ end% if
 %
 if(0)
 % S
-plasma_s_prop = 0.1; % [m]  - plasma propagation length
+plasma_s_prop = 0.4; % [m]  - plasma propagation length
 plasma_density = 2.3e17; % /cm^3
 plasma_PREION=1; % 0 : non-ionized plasma (Nneutrals=1) 
 plasma_Z = 3; % atomic number of plasma gas

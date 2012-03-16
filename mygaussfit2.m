@@ -27,7 +27,7 @@ S = sum( ( f_x - y ).^2 );
 %S = sum( ( f_x - y ).^2 );
 
 % visu (comment when running)
-if(1)
+if(0)
   axis([min(x) max(x) min(y) max(y)]);
   plot(x, f_x, '-xr');
   hold on;

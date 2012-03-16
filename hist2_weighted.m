@@ -1,4 +1,4 @@
-function [histmat, xbin, ybin] = hist2(x, y, xedges, yedges)
+function [histmat, xbin, ybin] = hist2_weighted(x, y, xedges, yedges, w)
 % function histmat  = hist2(x, y, xedges, yedges)
 %
 % Extract 2D histogram data containing the number of events
@@ -26,8 +26,8 @@ function [histmat, xbin, ybin] = hist2(x, y, xedges, yedges)
 % University of Debrecen, PET Center/Laszlo Balkay 2006
 % email: balkay@pet.dote.hu
 
-if nargin ~= 4
-    error ('The four input arguments are required!');
+if nargin ~= 5
+    error ('The five input arguments are required!');
     return;
 end
 if any(size(x) ~= size(y)) 
@@ -37,6 +37,7 @@ end
 
 [xn xbin] = histc(x,xedges);
 [yn ybin] = histc(y,yedges);
+
 
 %xbin, ybin zero for out of range values 
 % (see the help of histc) force this event to the 
@@ -55,11 +56,15 @@ else
       indexshift =  ynbin; 
 end
 
-%[xyuni, m, n] = unique(xy);
-xyuni = unique(xy);
-hstres = histc(xy,xyuni);
+[xyuni, m, n] = unique(xy);
+%xyuni = unique(xy);
+w_uni = w(m);
+[hstres xybin] = histc(xy,xyuni);
+
+hstres_w = accumarray(xybin, w)'; % adjust histogram for particle weigth
+
 histmat = zeros(xnbin,ynbin);
-histmat(xyuni-indexshift) = hstres;
+histmat(xyuni-indexshift) = hstres_w;
 histmat = histmat';
 
 %

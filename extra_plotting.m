@@ -1,10 +1,7 @@
-
 %
 % some extra plotting here
 %
-
 do_extra_plot = 0;
-
 if(do_extra_plot)
  N_db = 3;
  N_wb = 1;
@@ -197,128 +194,8 @@ grid on;
 
 end% if 0
 
-%
-% look at sliced beam quant's
-%
-if(0)
-  
-% show beam slices
-n_beam = 1;
-do_this_plot = 1;
-for(n_3D_counter=1:length(qp)-1)
-  s_timestep(n_3D_counter) = qp(n_3D_counter).s_timestep;
-  z_slices = qp(n_3D_counter).PP(n_beam).slice_z;
-  slice_N_z = qp(n_3D_counter).PP(n_beam).slice_N_z;
-  n_non_zero = min(find(slice_N_z > 0))+1;
-  slice_N_z = slice_N_z(n_non_zero:end);
-  sigma_x(n_3D_counter) = qp(n_3D_counter).PP(n_beam).sigma_x;
-  slice_mean_x = qp(n_3D_counter).PP(n_beam).slice_mean_x(n_non_zero:end);
-  slice_sigma_x = qp(n_3D_counter).PP(n_beam).slice_sigma_x(n_non_zero:end);
-  slice_mean_E = qp(n_3D_counter).PP(n_beam).slice_mean_E(n_non_zero:end);
-  slice_sigma_E = qp(n_3D_counter).PP(n_beam).slice_sigma_E(n_non_zero:end);
-  %sigma_x(n_3D_counter) = qp(n_3D_counter).PP(n_beam).sigma_x;
 
-  if( do_this_plot)
-  subplot(2,2,1);
-  n_take_out_avg = 5:8;
-  plot(z_slices(1:length(slice_mean_x)), slice_mean_x - mean(slice_mean_x(n_take_out_avg)), '-x');
-  %xlabel('z [um]');
-  ylabel('<x> [um]');
-  grid on;
-  title(['s=' num2str(s_timestep(n_3D_counter)*100, 3) ' [cm]']);
-  %axis([-250 200 -10 10]);
-  %
-  subplot(2,2,2);
-  plot(z_slices(1:length(slice_mean_x)), slice_sigma_x, '-x');
-  %xlabel('z [um]');
-  ylabel('\sigma_x [um]');
-  grid on;
-  %  
-  subplot(2,2,3);
-  plot(z_slices(1:length(slice_mean_x)), slice_mean_E, '-x');
-  xlabel('z [um]');
-  ylabel('<E> [GeV]');
-  grid on;
-  %  
-  subplot(2,2,4);
-  bar(z_slices(1:length(slice_mean_x)), slice_N_z);
-  xlabel('z [um]');
-  ylabel('\lambda_z [arb. units]');
-  grid on;
-  %  
-  %subplot(2,2,4);
-  %plot(slice_mean_x, slice_mean_E, '-x');
-  %xlabel('<x> [um]');
-  %ylabel('<E> [GeV]');
-  %grid on;
-  %
-  pause;
-  end% if
-  
- %slice_mean_x_end(n_3D_counter) = mean(slice_mean_x(end-2:end-0));
-  %slice_sigma_x_mean(n_3D_counter) = mean(slice_mean_x(end-2:end-0));
-  n_end = length(slice_mean_x);
-  n_start = 2;
-%  n_mid = round(length(slice_mean_x)/2);
-  n_mid = length(slice_mean_x)-5;
-  slice_mean_x_end(n_3D_counter) = slice_mean_x(n_end)- 1*mean(slice_mean_x(n_take_out_avg));
-  slice_mean_E_end(n_3D_counter) = slice_mean_E(n_end);
-  %slice_mean_x_end(n_3D_counter) = mean(slice_mean_x(end-5));
-  slice_sigma_x_mean(n_3D_counter) = mean(slice_sigma_x(n_start));
-  slice_mean_E_mean(n_3D_counter) = mean(slice_mean_E(8));
-  slice_sigma_E_mean(n_3D_counter) = mean(slice_sigma_E(8));
-  %
-  % compare with mid pos
-  slice_mean_x_mid(n_3D_counter) = slice_mean_x(n_mid)- 1*mean(slice_mean_x(n_take_out_avg));
-  slice_mean_E_mid(n_3D_counter) = slice_mean_E(n_mid);
-  slice_mean_x_start(n_3D_counter) = slice_mean_x(n_start);
-  slice_mean_E_start(n_3D_counter) = slice_mean_E(n_start);
 
-end% for
-
-% use this to calc' fraction of charge above a certain energy
-sum(slice_N_z(end-2:end))  / sum (slice_N_z)
-
-%
-% plot transverse parameters (hosing, erosion)
-%
-  subplot(2,1,1);
-%  semilogy(s_timestep*1e2, abs(slice_mean_x_end), '-xb');
- semilogy(s_timestep*1e2, abs(slice_mean_x_end - 0*my_smooth(slice_mean_x_end, 100)))
-%  hold on;
-%  semilogy(s_timestep*1e2, abs(slice_mean_x_mid), '-xr');
-  hold off;
-legend(['<x> at z[um]=' num2str(z_slices(n_end), '%.0f') ',E_{final}[GeV]=' num2str(slice_mean_E_end(end),'%.0f')], ['<x> at z[um]=' num2str(z_slices(n_mid), '%.0f') ',E_{final}[GeV]=' num2str(slice_mean_E_mid(end),'%.0f')]);
-  ylabel('<x> [um]'); % _{tail}
-  xlabel('s [cm]');
-%axis([0 100 1e-2 1e2]);
-grid on;
-  %
-    subplot(2,1,2);
-  plot(s_timestep*1e2, slice_sigma_x_mean, '-x');
-  hold on;
-  plot(s_timestep*1e2, sigma_x, '-r');
-  hold off;
-  legend(['slice \sigma_x at z[um]=' num2str(z_slices(n_start), '%.0f') ',E_{final}[GeV]=' num2str(slice_mean_E_end(n_start),'%.0f')], 'bunch \sigma_x');
-  ylabel('\sigma_x [um]'); % _{,head}
-  xlabel('s [cm]');
-  grid on;
-%  grid on;
-  %title(['s=' num2str(s_timestep*100, 3) ' [cm].   Time step: ' num2str(n_3D_timestep) ' [DT]']);
-
-%
-% plot energy gain for head and tail
-%
-  plot(s_timestep*1e2, abs(slice_mean_E_mean), '-x');
-  ylabel('<E> [GeV]');
-  xlabel('s [cm]');
-  grid on;
-  %
-
-  
-  
-
-end% if
 
 if(0)
 %
@@ -358,17 +235,135 @@ stop
 %
 % QP to ELE
 %
-load /Users/eadli/Dropbox/SLAC/quickpic/myData/10mm_Dx0_LB_matched.mat
+%load /Users/eadli/Dropbox/SLAC/quickpic/myData/10mm_Dx0_LB_matched.mat
+%pp_qp = qp_BEAMS;
+load /Users/eadli/Dropbox/SLAC/quickpic/myData/n3e17_30cm.mat
+%load /Users/eadli/Dropbox/SLAC/quickpic/myData/20x20x20_match.mat
 charge = 3e-9; % NB: charge is not written/transferred!
-pp_qp = qp_BEAMS;
+pp_qp = qp(1).PP(1).BEAM;
+%[Y, I] = sort(pp_qp(:,3)); % sort according to z
+%pp_qp = pp_qp(I, :);
+pp_qp = my_reduce_dist(pp_qp, 2); % reduce by a factor N for quicker running
+%pp_qp = pp_qp(5e4:6e4,:);
+%pp_qp(:,6) = 20e0 * (1 + 1e-6*randn(size(pp_qp(:,6)))); % to make monoenergetic beam
+%pp_qp(:,6) = pp_qp(:,6) * 100;
 filename = '/Users/eadli/Dropbox/SLAC/quickpic/myData/dist_ele.asc';
-my_write_qp2ele(pp_qp, filename);
-
+my_write_qp2elefile(pp_qp, filename);
 
 % analyse
 %  test: re-analyse same elegant beam with quickpic
 % 1) org qp beam
-[sigx, sigy, sigxp, sigyp, gauss_sigx, gauss_sigy, gauss_sigxp, gauss_sigyp, emnx, emny, betax, betay, alphax, alphay, muE, sigEE, corzp, corzx, corzy] = my_ana_beam(pp_qp)
-% 2) ele beam
-pp_qp2 = my_read_elefile2qp(filename);
-[sigx, sigy, sigxp, sigyp, gauss_sigx, gauss_sigy, gauss_sigxp, gauss_sigyp, emnx, emny, betax, betay, alphax, alphay, muE, sigEE, corzp, corzx, corzy] = my_ana_beam(pp_qp2)
+[sigx, sigy, sigxp, sigyp, gauss_sigx, gauss_sigy, gauss_sigxp, gauss_sigyp, emnx, emny, betax, betay, alphax, alphay, muE, sigEE, corzp, corzx, corzy] = my_ana_beam(pp_qp, [1 1 1 0 1 0]);
+
+%
+% here: propagate through elegant lens
+%
+
+% 2) read in ele beam
+filename = '/Users/eadli/Dropbox/SLAC/elegant/FACETSIM/FACET_WORK/facet.out';
+pp_qp = my_read_elefile2qp(filename);
+[sigx, sigy, sigxp, sigyp, gauss_sigx, gauss_sigy, gauss_sigxp, gauss_sigyp, emnx, emny, betax, betay, alphax, alphay, muE, sigEE, corzp, corzx, corzy] = my_ana_beam(pp_qp, [1 1 1 0 1]);
+
+
+% 4) twiss
+filename = '/Users/eadli/Dropbox/SLAC/elegant/FACETSIM/FACET_WORK/facet.twi';
+[twiss, param] = my_read_elefile2twiss(filename);
+%n_lensend = (64*3+2);
+n_lensend = length(twiss);
+ax = sqrt(twiss(end,2) / twiss(n_lensend,2))
+ay = sqrt(twiss(end,4) / twiss(n_lensend,4))
+%plot(twiss(1:end,1), twiss(1:end,2));
+frac_plot = n_lensend / length(twiss);
+%frac_plot = 6/6;
+plot(twiss(1:end*frac_plot,1), twiss(1:end*frac_plot,2), 'b')
+hold on;
+plot(twiss(1:end*frac_plot,1), twiss(1:end*frac_plot,4), 'r')
+hold off;
+xlabel('s [m]');
+ylabel('beta [m]');
+legend('x', 'y');
+grid on;
+
+filename = '/Users/eadli/Dropbox/SLAC/elegant/FACETSIM/FACET_WORK/facet.mat';
+% check imaging condition
+[M, M_arr] = my_read_elefile2mat(filename);
+m12 = M(1,2) 
+m34 = M(3,4) 
+
+
+
+%
+% osiris 
+%
+%data = load('~/temp/test.dat');
+data = load('~/temp/test2.dat');
+x = data(1:7:end);
+y = data(2:7:end);
+z = data(3:7:end);
+xp = data(4:7:end);
+yp = data(5:7:end);
+E = data(6:7:end);
+q = data(7:7:end);
+% fixing offsets
+%x = x - mean(x);
+%y = y - mean(y);
+%xp = xp - mean(x);
+%yp = yp - mean(y);
+pp_full = [x y z xp yp E];
+[sigx, sigy, sigxp, sigyp, gauss_sigx, gauss_sigy, gauss_sigxp, gauss_sigyp, emnx, emny, betax, betay, alphax, alphay, muE, sigEE, corzp, corzx, corzy] = my_ana_beam([pp_full q], [1 1 1 0 1 0]);
+
+% downsampling
+dist_red = my_reduce_dist([pp_full q], 1, 1504);
+%dist_red = [pp_full q];
+pp_os = dist_red(:,1:6);
+q_red = dist_red(:,7);
+filename = '/Users/eadli/Dropbox/SLAC/quickpic/myData/dist_ele.asc';
+my_write_qp2elefile(pp_os, filename);
+
+
+% take out low charge tails
+if(0)
+[q_sort, I] = sort(q); % sort according to q
+cutfrac = 2/6;
+charge_pers = sum(q_sort(1:round(end*cutfrac)) / sum(q)) * 100
+n_new_particles = sum(sort(q_sort(end*cutfrac:end)) / min(q_sort(end*cutfrac:end)));
+q_red_scaled = (sort(q_sort(round(end*cutfrac:end))) / min(q_sort(round(end*cutfrac:end))));
+%semilogy(q_red_scaled)
+pp_red = pp_os(I, :);
+pp_red = pp_red(round(end*cutfrac):end, :);
+%
+[sigx, sigy, sigxp, sigyp, gauss_sigx, gauss_sigy, gauss_sigxp, gauss_sigyp, emnx, emny, betax, betay, alphax, alphay, muE, sigEE, corzp, corzx, corzy] = my_ana_beam(pp_red, [1 1 1 0 1 0]);
+% multiply number of particle for real scaling)
+pp_mult = my_mult_part(pp_red, round(q_red_scaled));
+end% if
+
+% QS1DUMP
+filename = '/Users/eadli/Dropbox/SLAC/elegant/FACETSIM/ELESIM/qs1.out';
+pp_qp = my_read_elefile2qp(filename);
+[sigx, sigy, sigxp, sigyp, gauss_sigx, gauss_sigy, gauss_sigxp, gauss_sigyp, emnx, emny, betax, betay, alphax, alphay, muE, sigEE, corzp, corzx, corzy] = my_ana_beam(pp_qp, [1 1 1 0 1]);
+
+
+% 2) read in ele beam
+filename = '/Users/eadli/Dropbox/SLAC/elegant/FACETSIM/FACET_WORK/facet.out';
+pp_wafer = my_read_elefile2qp(filename);
+%  sdds2stream ../ELESIM/aerogel.out  -columns=particleID  > /tmp/dat.txt
+wafer = load('/tmp/dat.txt');
+wafer_id = wafer(:,1);
+q_wafer = q_red(wafer_id);
+[sigx, sigy, sigxp, sigyp, gauss_sigx, gauss_sigy, gauss_sigxp, gauss_sigyp, emnx, emny, betax, betay, alphax, alphay, muE, sigEE, corzp, corzx, corzy] = my_ana_beam([pp_wafer q_wafer], [1 1 1 0 1]);
+
+
+
+% lost particle id
+%  sdds2stream ../FACET_WORK/facet.lost -columns=particleID,s,p  > /tmp/dat.txt
+lost = load('/tmp/dat.txt');
+lost_id = lost(:,1);
+charge_lost = sum(q_red(lost_id)) / sum(q_red) * 100
+
+
+
+
+% plot charge
+semilogy(sort(q_red)/ max(q_red));
+xlabel('osiris particle # (sorted for charge');
+ylabel('relative charge');

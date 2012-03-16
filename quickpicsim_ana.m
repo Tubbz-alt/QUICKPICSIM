@@ -15,7 +15,8 @@ clf;
 working_dir = '/Users/eadli/Dropbox/SLAC/quickpic/QUICKPICSIM/';
 
 % update data dir to your quickpic output folder
-datadir = '~/templ/testrun/'
+datadir = '~/quicksimoutput/testrun/'
+
 
 
 % choose output to analyze
@@ -36,13 +37,14 @@ do_beam_y_yp = 0;
 do_beam_z_E = 0;
 
 % start plot  3D timestep, -1: start from start
-%n_3D_start = 910;
+%n_3D_start = 1800;
+%n_3D_start = 600;
 n_3D_start = -1;
 
  
 % plotting?
 do_plot = 1;
-do_fixed_axes = 0;  % set manually below, if not auto-scale per graph
+do_fixed_axes = 1;  % set manually below, if not auto-scale per graph
 % for movie-makers
 do_movie = 0;
 n_movframe = 0;
@@ -132,20 +134,30 @@ n_3D_counter_beam = 1;
 %
 % read specified field and dists
 %
+% establish quickpic output format
+qp_version_suffix = my_get_quickpic_format(datadir);
+if (length (qp_version_suffix) == 0)
+  disp('EA: unknown QuickPIC version format');
+  stop;
+end% if
 if(do_FEZ)
-  myfile = [datadir 'FEZ-XZ/FEZ-XZ_' n_3D_timestep_str '.hdf'];
+  myfile = [datadir 'FEZ-XZ/FEZ-XZ_' n_3D_timestep_str qp_version_suffix];
   qp(n_3D_counter).FEZ = double(my_read_hdf(myfile));
 end% if
 if(do_QEB)
-  myfile = [datadir 'QEB-XZ/QEB-XZ_' n_3D_timestep_str '.hdf'];
+  myfile = [datadir 'QEB-XZ/QEB-XZ_' n_3D_timestep_str qp_version_suffix];
   qp(n_3D_counter).QEB = double(my_read_hdf(myfile));
 end% if
 if(do_QEB_3D)
-  myfile = [datadir 'QEB/QEB_' n_3D_timestep_str '.hdf'];
+  myfile = [datadir 'QEB/QEB_' n_3D_timestep_str qp_version_suffix];
   qp(n_3D_counter).QEB_3D = double(my_read_hdf(myfile));
 end% if
 if(do_QEP)
-  myfile = [datadir 'QEP01-XZ/QEP01-XZ_' n_3D_timestep_str '.hdf'];
+  if( strfind(qp_version_suffix, '.h5') )
+    myfile = [datadir 'QEP1-XZ/QEP1-XZ_' n_3D_timestep_str qp_version_suffix];
+  else
+    myfile = [datadir 'QEP01-XZ/QEP01-XZ_' n_3D_timestep_str qp_version_suffix];
+  end% if
   qp(n_3D_counter).QEP = double(my_read_hdf(myfile));
 end% if
 
@@ -208,12 +220,24 @@ n_3D_timestep_str = sprintf('%.4d', n_3D_timestep');
 % load phase space beam (merge all beam parts)
 qp(n_3D_counter_beam).PP(n_beam).BEAM = my_get_quickpic_phasespace(datadir, n_beam_str, n_3D_timestep_str); % auto-extracts beam part filenames exists
 % set units
-qp(n_3D_counter_beam).PP(n_beam).BEAM(:,1) = qp(n_3D_counter_beam).PP(n_beam).BEAM(:,1) * scale_x - offset_x0; % to um
-qp(n_3D_counter_beam).PP(n_beam).BEAM(:,2) = qp(n_3D_counter_beam).PP(n_beam).BEAM(:,2) * scale_y - offset_y0; % to um
-qp(n_3D_counter_beam).PP(n_beam).BEAM(:,3) = qp(n_3D_counter_beam).PP(n_beam).BEAM(:,3) * scale_z - offset_z0; % to um
-qp(n_3D_counter_beam).PP(n_beam).BEAM(:,4) = qp(n_3D_counter_beam).PP(n_beam).BEAM(:,4) ./ ( mean(qp(n_3D_counter_beam).PP(n_beam).BEAM(:,6)) ) * 1e6; % to urad
-qp(n_3D_counter_beam).PP(n_beam).BEAM(:,5) = qp(n_3D_counter_beam).PP(n_beam).BEAM(:,5) ./ ( mean(qp(n_3D_counter_beam).PP(n_beam).BEAM(:,6)) ) * 1e6; % to urad
-qp(n_3D_counter_beam).PP(n_beam).BEAM(:,6) = qp(n_3D_counter_beam).PP(n_beam).BEAM(:,6) * SI_em * SI_c^2/SI_e / 1e9; % total energy [GeV]
+qp_version_suffix = my_get_quickpic_format(datadir);
+if( strfind(qp_version_suffix, '.h5') )
+  % scaling for newer quickpic versions
+  qp(n_3D_counter_beam).PP(n_beam).BEAM(:,1) = qp(n_3D_counter_beam).PP(n_beam).BEAM(:,1) * 1 / k_p * 1e6; % to um
+  qp(n_3D_counter_beam).PP(n_beam).BEAM(:,2) = qp(n_3D_counter_beam).PP(n_beam).BEAM(:,2) * 1 / k_p * 1e6; % to um
+  qp(n_3D_counter_beam).PP(n_beam).BEAM(:,3) = qp(n_3D_counter_beam).PP(n_beam).BEAM(:,3) * 1 / k_p * 1e6; % to um
+  qp(n_3D_counter_beam).PP(n_beam).BEAM(:,4) = qp(n_3D_counter_beam).PP(n_beam).BEAM(:,4) ./ ( mean(qp(n_3D_counter_beam).PP(n_beam).BEAM(:,6)) ) * 1e6; % to urad
+  qp(n_3D_counter_beam).PP(n_beam).BEAM(:,5) = qp(n_3D_counter_beam).PP(n_beam).BEAM(:,5) ./ ( mean(qp(n_3D_counter_beam).PP(n_beam).BEAM(:,6)) ) * 1e6; % to urad
+  qp(n_3D_counter_beam).PP(n_beam).BEAM(:,6) = qp(n_3D_counter_beam).PP(n_beam).BEAM(:,6) * SI_em * SI_c^2/SI_e / 1e9; % total energy [GeV]
+else
+  % scaling for older quickpic versions
+  qp(n_3D_counter_beam).PP(n_beam).BEAM(:,1) = qp(n_3D_counter_beam).PP(n_beam).BEAM(:,1) * scale_x - offset_x0; % to um
+  qp(n_3D_counter_beam).PP(n_beam).BEAM(:,2) = qp(n_3D_counter_beam).PP(n_beam).BEAM(:,2) * scale_y - offset_y0; % to um
+  qp(n_3D_counter_beam).PP(n_beam).BEAM(:,3) = qp(n_3D_counter_beam).PP(n_beam).BEAM(:,3) * scale_z - offset_z0; % to um
+  qp(n_3D_counter_beam).PP(n_beam).BEAM(:,4) = qp(n_3D_counter_beam).PP(n_beam).BEAM(:,4) ./ ( mean(qp(n_3D_counter_beam).PP(n_beam).BEAM(:,6)) ) * 1e6; % to urad
+  qp(n_3D_counter_beam).PP(n_beam).BEAM(:,5) = qp(n_3D_counter_beam).PP(n_beam).BEAM(:,5) ./ ( mean(qp(n_3D_counter_beam).PP(n_beam).BEAM(:,6)) ) * 1e6; % to urad
+  qp(n_3D_counter_beam).PP(n_beam).BEAM(:,6) = qp(n_3D_counter_beam).PP(n_beam).BEAM(:,6) * SI_em * SI_c^2/SI_e / 1e9; % total energy [GeV]
+end% 
 
 % store some quick numbers
 qp(n_3D_counter).PP(n_beam).sigma_x = std(qp(n_3D_counter_beam).PP(n_beam).BEAM(:,1));
@@ -235,14 +259,15 @@ qp(n_3D_counter).QEB_max =  max(max(qp(n_3D_counter).QEB));
 qp(n_3D_counter).PP(n_beam).mean_E = mean(qp(n_3D_counter_beam).PP(n_beam).BEAM(:,6));
 % store slice transverse data
 if(n_3D_counter == 1)
-  [slice_mean, slice_sigma, slice_z, slice_N_z] = my_get_slice_var(qp(n_3D_counter_beam).PP(n_beam).BEAM, 3, 1);
+  [slice_mean_x, slice_sigma_x, slice_z, slice_N_z] = my_get_slice_var(qp(n_3D_counter_beam).PP(n_beam).BEAM, 3, 1);
 else
-  [slice_mean, slice_sigma, slice_z, slice_N_z] = my_get_slice_var(qp(n_3D_counter_beam).PP(n_beam).BEAM, 3, 1, slice_z);
+  % ensure same slicing as beam evolves through plasma, in order to compare apples to apples
+  [slice_mean_x, slice_sigma_x, slice_z, slice_N_z] = my_get_slice_var(qp(n_3D_counter_beam).PP(n_beam).BEAM, 3, 1, slice_z);
 end% if
 qp(n_3D_counter).PP(n_beam).slice_z = slice_z;
 qp(n_3D_counter).PP(n_beam).slice_N_z = slice_N_z;
-qp(n_3D_counter).PP(n_beam).slice_mean_x = slice_mean;
-qp(n_3D_counter).PP(n_beam).slice_sigma_x = slice_sigma;
+qp(n_3D_counter).PP(n_beam).slice_mean_x = slice_mean_x;
+qp(n_3D_counter).PP(n_beam).slice_sigma_x = slice_sigma_x;
 % store slice energy data
 if(n_3D_counter == 1)
   [slice_mean, slice_sigma, slice_z, slice_N_z] = my_get_slice_var(qp(n_3D_counter_beam).PP(n_beam).BEAM, 3, 6);
@@ -253,8 +278,17 @@ qp(n_3D_counter).PP(n_beam).slice_z = slice_z;
 qp(n_3D_counter).PP(n_beam).slice_N_z = slice_N_z;
 qp(n_3D_counter).PP(n_beam).slice_mean_E = slice_mean;
 qp(n_3D_counter).PP(n_beam).slice_sigma_E = slice_sigma;
+% store slice twiss data
+[emnx,emny,betax,alphax,betay,alphay] = my_get_slice_twiss(qp(n_3D_counter_beam).PP(n_beam).BEAM, slice_z);
+qp(n_3D_counter).PP(n_beam).slice_emnx = emnx;
+qp(n_3D_counter).PP(n_beam).slice_emny = emny;
+qp(n_3D_counter).PP(n_beam).slice_betax = betax;
+qp(n_3D_counter).PP(n_beam).slice_alphax = alphax;
+qp(n_3D_counter).PP(n_beam).slice_betay = betay;
+qp(n_3D_counter).PP(n_beam).slice_alphay = alphay;
 end% for each beam
 
+qp(n_3D_counter).n0 = n0;
 s_timestep = (SI_c/omega_p) * DT * n_3D_timestep; % propagation length for this timestep
 qp(n_3D_counter).s_timestep = s_timestep;
 disp(' ' ); 
@@ -371,7 +405,6 @@ if(do_QEB)
   title(['n_{b,max} = ' num2str(QEB_max, '%.1f') ' n_p_0']);
 %  pause;
 end% if plot
-
 
 
 %
@@ -506,7 +539,7 @@ end% for
 subplot(2,4,[1 5]);
 %hist_var1 = 3; % abscissa
 hist_var1 = 1; % abscissa
-hist_var2 = 6; % ordinate
+hist_var2 = 4; % ordinate
 pplabel(1).var = 'x [um]';
 pplabel(2).var = 'y [um]';
 pplabel(3).var = 'z [um]';
@@ -548,8 +581,8 @@ if(do_fixed_axes)
 end% if
 x_min = -50;
 x_max= 50;
-%E_min= 0;
-%E_max= 25;
+  E_min = -10000; % x xp
+  E_max = 10000;% x xp
 xedges = linspace(x_min, x_max, 512+0*round((x_max-x_min)*scale_x));
 yedges = linspace(E_min, E_max, 512);
 histmat = hist2(qp_BEAMS(:,hist_var1), qp_BEAMS(:,hist_var2), xedges, yedges);
@@ -560,6 +593,7 @@ if(do_fixed_axes)
   caxis([0 10]);
   caxis([0 20]); % positrons
 end% if
+%  caxis([0 10]);
 shading('flat');
 axis([x_min x_max E_min E_max]); % for comp with AAC 2010 figure
 %axis square tight;

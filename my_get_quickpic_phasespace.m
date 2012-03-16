@@ -2,6 +2,15 @@ function qp_BEAM = my_get_quickpic_phasespace(mydir, n_beam_str, n_timestep_str)
 
 qp_BEAM = [];
 
+% establish quickpic output format
+qp_version_suffix = my_get_quickpic_format(mydir);
+if( strfind(qp_version_suffix, '.h5') )
+  % newer QP versions: output in a single file per timestep
+  myfile = [mydir 'RAW-BEAM/' num2str(n_beam_str, '%.2d') '/RAW-BEAM-' n_beam_str '_' n_timestep_str '.h5'];
+  qp_BEAM = double(my_read_h5_beamdata(myfile));
+else
+% older QP versions: output split into multiple files per timestep
+
 % writes the first line to get starting number (it seems to not always be 0 for beam 2)
 temp_filename = [mydir 'PHA-BEAM/' n_beam_str '/' 'temp.txt'];
 system(['ls -la ' mydir 'PHA-BEAM/' n_beam_str '/PHA-BEAM-' '*-' n_beam_str '_' n_timestep_str '* > ' temp_filename]);
@@ -23,5 +32,7 @@ ls_output = fgets(fid);
   end% if
 end% while
 fclose(fid);
+
+end% of
 
 return;

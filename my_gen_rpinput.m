@@ -47,6 +47,9 @@ if( beam_match )
   beam_sigma_y = sqrt(beam_emitt_y ./ k_p .*sqrt(2./gamma) )
 end% if
 if( emitt_match )
+  k_p
+  beam_sigma_x
+  gamma
   beam_emitt_x = k_p*beam_sigma_x.^2*sqrt(gamma./2)
   beam_emitt_y = k_p*beam_sigma_y.^2*sqrt(gamma./2)
 end% if
@@ -71,13 +74,16 @@ Box_X_exact = 1.5*max(1.0 * 4 * R_bubble, max(5*max(beam_sigma_x), 5*max(beam_si
 if( (sum(abs(tilt_x))+sum(abs(tilt_y))) > 0)
   Box_X_exact = Box_X_exact +2*sqrt(3)*beam_sigma_z*max( max(abs(tilt_x(2,:))), max(abs(tilt_y(2,:))));
 end% if
-Box_X = 5 * ceil(Box_X_exact*1e6/10)*10 % [um] - round the box size
+Box_X = 4 * ceil(Box_X_exact*1e6/10)*10 % [um] - round the box size
 Box_X = max(Box_X); % if multiple bunches, use largest Box_X calc
+% make odd number of transverse cells (in order to center the beam)
+Box_X = Box_X + 1; % if multiple bunches, use largest Box_X calc
 %Box_X = 580
 Box_Y = Box_X % [um]
-Box_Z_exact = max(10*max(beam_sigma_z), 1.5 * lambda_p) % [um]
+Box_Z_exact = max(7.5*max(beam_sigma_z), 1.5 * lambda_p) % [um]
 Box_Z = round(Box_Z_exact*1e6/20)*20 % [um] - round the box size
-%Box_Z = 480
+%Box_Z = 190
+Box_Z = Box_Z + 1;
 skin_frac = 1/20; % grid size in fractions of skin-depth
 INDX = floor( log(Box_X*1e-6 * k_p / skin_frac) / log(2) )
 INDY = floor( log(Box_Y*1e-6 * k_p / skin_frac) / log(2) )
@@ -103,12 +109,12 @@ end% while
 %   ( if custom z then N/A )
 if(~beam_z_is_custom)
   if( beam_z_pos == -1)
-    % if user gives nothing, or -1, put (all..) bunches on Box_Z/2
-    beam_z_pos = round(Box_Z/2) * ones(N_beams, 1)
+    % if user gives nothing, or -1, put (all..) bunches on Box_Z * 1/3
+    beam_z_pos = round(Box_Z * 1/3*1.1) * ones(N_beams, 1)
   end% if
 end% if
 if( beam_z_pos == -1)
-  beam_z_pos = round(Box_Z/2) * ones(N_beams, 1);
+  beam_z_pos = round(Box_Z* 1/3*1.1) * ones(N_beams, 1);
 end% if
 
 % Where to put bunches transversally if tilt?
@@ -154,7 +160,7 @@ Num_Stages = max(n_tasks / 2^(INDX-3), 1);
 % tilt in x
 % tilt in y
 qp_emitt_x = beam_emitt_x*1e6
-qp_emitt_y = beam_emitt_y*1e6;
+qp_emitt_y = beam_emitt_y*1e6
 qp_sigma_x = beam_sigma_x*1e6
 qp_sigma_y = beam_sigma_y*1e6
 qp_e_spread = beam_sigma_E_E; 
@@ -317,7 +323,7 @@ else
 end% if
 fprintf(fidout, [' BEAM_PROFILE = ''test.hdf''' '\n']  );
 fprintf(fidout, [' QUIET_START = .true.' '\n']  );
-fprintf(fidout, [' Parameter_Array(1:1,1:3) = ' num2str(round(Box_X/2) + comp_tilt_x(n_beam), '%.2f') ',' num2str(round(Box_Y/2) + comp_tilt_y(n_beam), '%.2f')  ',' num2str(beam_z_pos(n_beam), '%.2f') '\n']);
+fprintf(fidout, [' Parameter_Array(1:1,1:3) = ' sprintf('%.3f', Box_X/2 + 0*comp_tilt_x(n_beam)) ',' sprintf('%.3f', Box_Y/2 + comp_tilt_y(n_beam))  ',' num2str(beam_z_pos(n_beam), '%.2f') '\n']);
 if( beam_z_is_custom )
   fprintf(fidout, [' Parameter_Array(2:2,1:3) = ' num2str(qp_sigma_x(n_beam), '%.2f') ',' num2str(qp_sigma_y(n_beam), '%.2f')  ',' num2str(length(histZcount), '%.0d') '\n']);
 else

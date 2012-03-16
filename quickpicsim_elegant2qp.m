@@ -403,13 +403,13 @@ end% for bunches
 %
 
 % FACET parameters
-plasma_s_prop = 1.0; % [m]  - plasma propagation length
-Plasma_Density = 1.0e15; % /cm^3
+plasma_s_prop = 0.8; % [m]  - plasma propagation length
+Plasma_Density = 4.5e17; % /cm^3
 %Plasma_Density = 2.0e16; % /cm^3
 Plasma_Gas_Species = 3; % atom number
 plasma_PREION=0; % 0 : non-ionized plasma (Nneutrals=1) 
 plasma_Z = 3; % atomic number of plasma gas
-BEAM_EV=1; % 0 : calc wake only (single time-step)
+BEAM_EV=0; % 0 : calc wake only (single time-step)
 beam_match = 1; % override sigma_x, sigma_y with matched counterparts
 emitt_match = 0;
 %charge = charge * 2
@@ -419,7 +419,7 @@ tilt_x([1 3], :) = 0;
 tilt_y([1 3], :) = 0;
 
 % force no tilt (for two bunches)
-%tilt_x = [0 0 0; 0 0 0]';
+tilt_x = [0 0 0; 0 0 0]';
 tilt_y = [0 0 0; 0 0 0]';
 
 
