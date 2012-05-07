@@ -228,7 +228,7 @@ direction for beam centroid calculation.
  DFPHI=0,
  DFPHISLICE=0, PHIX0=0 ,PHIY0=300, PHIZ0=0,
  DFPSI=0, 
- DFPSISLICE=0 PSIX0=0,PSIY0=300, PSIZ0=0
+ DFPSISLICE=0, PSIX0=0,PSIY0=300, PSIZ0=0
 /
 
 &Ponderomotive_Potential_Diag
