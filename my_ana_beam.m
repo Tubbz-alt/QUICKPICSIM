@@ -8,12 +8,12 @@
 % output: sigmas, betas etc.,  see source
 function [sigx, sigy, sigxp, sigyp, gauss_sigx, gauss_sigy, gauss_sigxp, gauss_sigyp, emnx, emny, betax, betay, alphax, alphay, muE, sigEE, corzp, corzx, corzy, slice] = my_ana_beam(pp, plot_vector, n_sigma);
 
-if nargin<2, plot_vector = [0 0 0 0 0 0]; end
+if nargin<2, plot_vector = [1 1 1 0 0 1]; end
 if nargin<3, n_sigma = 3; end
 
 % we expand by a weight vector of ones, if none is present (overhead in calc is small)
 if(size(pp,2) == 6)
-  pp = [pp ones(length(pp), 1)];
+  pp = [pp ones(size(pp, 1), 1)];
 end% if
 
 if(length(plot_vector) < 7)
@@ -23,7 +23,7 @@ end% if
 if(sum(plot_vector) > 0)
   clf;
   set(0,'defaultaxesfontsize',13);
-  set(0,'defaultAxesFontName', 'Arial')
+  set(0,'defaultAxesFontName', 'Arial');
 end% if
 
 % for histograms
@@ -130,6 +130,7 @@ if(plot_vector(5) == 1)
   n_plot = n_plot + 1;
   subplot(2,N_plot_cols, n_plot);
   my_densplot(pp, 1, 6, 0, n_sigma);
+%  my_densplot(pp, 4, 5, 0, n_sigma); % EA VERY TEMP
   subplot(2,N_plot_cols, n_plot+N_plot_cols);
   my_densplot(pp, 1, 2, 0, n_sigma);
 end% if
@@ -146,7 +147,8 @@ if(plot_vector(6) == 1)
   my_densplot(pp, 3, 2, 0, n_sigma);
 end% if
 
-subplot(2,N_plot_cols,3);
+if(sum(plot_vector) > 0)
+subplot(2,N_plot_cols,2);
   title([ '\mu_E [GeV] =' num2str(muE, '%.2f') ','...
           '\sigma_E / E [-] =' num2str(sigEE, '%.2E') ','...
           '\sigma_x [um]=' num2str(sigx, '%.1f') ','...
@@ -161,57 +163,27 @@ subplot(2,N_plot_cols,3);
 %          'c_{zp}=' num2str(corzp, '%.1E') ','...
 %          'c_{zx}=' num2str(corzx, '%.1E') ...
         ]);
-          
+end% if
+
 if(sum(plot_vector) > 0)
   set(0,'defaultaxesfontsize',18);
 end% if
   
 
 %
-% beamn slice quantities
+% beam slice quantities
 %
-  [slice.mean_x, slice.sigma_x, slice.z, slice.N_z] = my_get_slice_var(pp, 3, 1);
-  [slice.mean_y, slice.sigma_y, slice.z, slice.N_z] = my_get_slice_var(pp, 3, 2);
-  [slice.mean_E, slice.sigma_E, slice.z, slice.N_z] = my_get_slice_var(pp, 3, 6);
-  [slice.emnx,slice.emny,slice.betax,slice.alphax,slice.betay,slice.alphay] = my_get_slice_twiss(pp, slice.z);
-  if(plot_vector(7))
-  subplot(2,3,2);
-%  n_take_out_avg = 5:8;
-%  plot(slice.z(1:end-1), slice.mean_x - mean(slice.mean_x(n_take_out_avg)), '-x');
-  plot(slice.z(1:end-1), slice.mean_x - mean(slice.mean_x), '-x');
-  %xlabel('z [um]');
-  ylabel('<x> [um]');
-  grid on;
-  %
-  subplot(2,3,5);
-  plot(slice.z(1:end-1), slice.sigma_x, '-x');
-  xlabel('z [um]');
-  ylabel('\sigma_x [um]');
-  grid on;
-  %  
-  subplot(2,3,4);
-  plot(slice.z(1:end-1), slice.mean_E, '-x');
-  xlabel('z [um]');
-  ylabel('<E> [GeV]');
-  grid on;
-  %  
-  subplot(2,3,3);
-  plot(slice.z(1:end-1), slice.emnx, '-x');
-  %xlabel('z [um]');
-  ylabel('\epsilon_{N,x} [um]');
-  grid on;
-  %  
-  subplot(2,3,6);
-  plot(slice.z(1:end-1), slice.betax, '-x');
-  xlabel('z [um]');
-  ylabel('\beta_x [m]');
-  grid on;
-  %
-  subplot(2,3,1);
-  bar(slice.z(1:end-1), slice.N_z / max(slice.N_z));
-  %xlabel('z [um]');
-  ylabel('\lambda_z [arb. units]');
-  grid on;
-  %  
-  end% if
+
+% sort beam first
+[Y, I] = sort(pp(:,3));
+pp = pp(I, :);
+[slice.mean_x, slice.sigma_x, slice.z, slice.N_z] = my_get_slice_var(pp, 3, 1);
+[slice.mean_xp, slice.sigma_x, slice.z, slice.N_z] = my_get_slice_var(pp, 3, 4);
+[slice.mean_y, slice.sigma_y, slice.z, slice.N_z] = my_get_slice_var(pp, 3, 2);
+[slice.mean_E, slice.sigma_E, slice.z, slice.N_z] = my_get_slice_var(pp, 3, 6);
+[slice.emnx,slice.emny,slice.betax,slice.alphax,slice.betay,slice.alphay] = my_get_slice_twiss(pp, slice.z);
+
+if(plot_vector(7))  
+  my_ana_beam_slice( slice );
+end% if
   

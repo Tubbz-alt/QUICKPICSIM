@@ -5,10 +5,8 @@ function my_densplot(pp, hist_var1, hist_var2, do_cbar, n_sigma_axes)
 if nargin<4, do_cbar = 0; end
 if nargin<5, n_sigma_axes = 5; end
 
-%
-n_bins = 512;
+n_bins = 2^ceil(log(sqrt(size(pp, 1))) / log(2) );
 n_colorscaling = 24 * (512/n_bins);
-%n_colorscaling = 12;
 
 pplabel(1).var = 'x [um]';
 pplabel(2).var = 'y [um]';
@@ -39,14 +37,15 @@ if( size(pp,2) == 7)
 % give weighted 2D hist
   [histmat, xbin, ybin] = hist2_weighted(pp(:,hist_var1), pp(:,hist_var2), hist_Zx, hist_Zy, pp(:,7) );
 else
-%  [histmat, xbin, ybin] = hist2(pp(:,hist_var1), pp(:,hist_var2), hist_Zx, hist_Zy);
+  [histmat, xbin, ybin] = hist2(pp(:,hist_var1), pp(:,hist_var2), hist_Zx, hist_Zy);
 end% if
   
 h_g = pcolor(hist_Zx,hist_Zy,histmat); 
 shading('flat');
 dens_min = min(min(histmat));
-dens_max = max(max(histmat));
-caxis([dens_min dens_max/n_colorscaling]);
+dens_max = mean(max(histmat));
+%caxis([dens_min dens_max/n_colorscaling]); % better without ....
+caxis([dens_min dens_max]); % better without ....
 if(do_cbar)
   h_c = colorbar;
   set(get(h_c,'ylabel'),'String', 'density  [a.u.]');

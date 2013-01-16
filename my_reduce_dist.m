@@ -8,4 +8,4 @@ rng(seed);
 % randomize before reduce
 I_rand = my_shuffle(1:size(pp,1));
 pp = pp(I_rand, :);
-pp = pp (1:N_red:end, :);
+pp = pp(1:N_red:end, :);

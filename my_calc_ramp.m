@@ -1,4 +1,5 @@
-function [b_mat, a_mat, b_0, a_0, b_min, a_min, b_max, a_max, b_beat_rel, z, beta_evol] =my_calc_ramp(n0, gamma, d_beta_beta0, do_plot)
+function [b_mat, a_mat, b_0, a_0, b_min, a_min, b_max, a_max, b_beat_rel, z, beta_evol] =my_calc_ramp(n0, gamma, d_beta_beta0, do_plot, z_ramp)
+
 
 %
 % Plasma ramp stuff
@@ -16,29 +17,36 @@ k_p_inv = 1/ k_p; % skin-depth and UCLA length scale
 % input beta
 beta_1 = sqrt(2*gamma) / k_p;
 
-%beta_1 = 0.3;
-
 %%% plasma ramp parameters
-% length of plasma rollup
-roll_up = 0; % 0: roll_down
-if(roll_up)
-  z0     = 0.1; % [m] - roll up (right edge)
-else
-  z0     = 0.1; % [m] - roll down (left edge)
-%  z0     = 0.1; % [m] - roll down (left edge)
-end
+roll_up = 1; % 0: roll_down
+
 % speed of plasma rollup
-w      = 5 / z0; % [m^-1]
-%nsteps = 512;
-nsteps = 64;
+w      = 5 / z_ramp; % [m^-1]
+%w      = 33;
+nsteps = 2048;
+%nsteps = 64;
+%nsteps = 128;
+%nsteps = 47; % for quickpic two ramp
 % step size
-dz     = z0/nsteps; % [m]
+dz     = z_ramp/nsteps; % [m]
 
 z = dz*(0:(nsteps-1));
-%np = n0*1e6*(tanh(w*(z-z0/2))+1);
-np =  n0*1e6*(tanh(w*(z-z0/2))+1)/2; % corrected (was factor 2 too large)
+%np = n0*1e6*(tanh(w*(z-z_ramp/2))+1);
+np =  n0*1e6*(tanh(w*(z-z_ramp/2))+1)/2; % corrected (was factor 2 too large)
+%np = n0*(1-tanh(w (z-z0/2)) ) ./ (1- tanh(w*(-z0/2)) ); % JF's version of fit
+%plot(np)
+%stop
 %min(np)%max(np)
 %max(np)
+
+
+
+%
+% manually scale to match 0 to 1 (fit function is cut before 0 and 1)
+np = np - np(1)+eps;
+scale_f = (n0*1e6)/np(end);
+np = np * scale_f;
+
 
 %
 % write ramp for input into quickpic
@@ -57,27 +65,46 @@ if(do_write_np)
  fprintf(fid, ' Density_Variation_NSec=%d\n', Nsec);
  fprintf(fid, ' Density_Variation_Fs(1:%d) = ', Nsec);
   % define initial flat top
-  fprintf(fid, '%.2e,', 1.0);
+    if(roll_up)
   if(flat_top_s > 0.0)
-    fprintf(fid, '%.2e,', 1.0);
+    fprintf(fid, '%.3e,', 1.0e-10);
   end% if
+    else
+  fprintf(fid, '%.3e,', 1.0);
+  if(flat_top_s > 0.0)
+    fprintf(fid, '%.3e,', 1.0);
+  end% if
+      end% if
   for n=1:nsteps
     if(roll_up)
       n_pick = n;
     else
       n_pick = nsteps-n+1;
     end;
-    fprintf(fid, '%.2e,', np(n_pick) / n0 / 1e6);
+    myvalue = np(n_pick) / n0 / 1e6;
+    if(myvalue < 1e-10)
+      myvalue = 1e-10; % "light paranoia", avoiding zero values for QuickPIC
+    end% if
+    fprintf(fid, '%.3e,', myvalue);
   end% if
   % define final points of low density (5 cm of ~ zero dens see drift)
-  fprintf(fid, '%.2e,', 1.0E-10);
-  fprintf(fid, '%.2e', 1.0E-10);
+    if(roll_up)
+  fprintf(fid, '%.3e,', 1.0);
+  fprintf(fid, '%.3e', 1.0);
+    else
+  fprintf(fid, '%.3e,', 1.0E-10);
+  fprintf(fid, '%.3e', 1.0E-10);
+      end% if
     fprintf(fid, '\n');
   % define initial flat top
   fprintf(fid, ' Density_Variation_s(1:%d) = ', Nsec);
-  fprintf(fid, '%.2e,', 0.0);
+  fprintf(fid, '%.3e,', 0.0);
   if(flat_top_s > 0.0)
-    fprintf(fid, '%.2e,', flat_top_s*1e6);
+    if(roll_up)
+      % do nothing
+    else
+          fprintf(fid, '%.3e,', flat_top_s*1e6);
+    end% if
   end% if
   for n=1:nsteps
     if(roll_up)
@@ -85,12 +112,22 @@ if(do_write_np)
     else
       n_pick = nsteps-n+1;
     end;
-    L = z0/nsteps;
-    fprintf(fid, '%.2e,', L*n*1e6 + flat_top_s*1e6);
+    L = z_ramp/nsteps;
+    if(roll_up)
+       roll_up_delta = 50e3;
+      fprintf(fid, '%.3e,', L*n*1e6);
+    else
+      fprintf(fid, '%.3e,', L*n*1e6 + flat_top_s*1e6);
+    end% if
   end% if
   % define final points of low density (5 cm of ~ zero dens see drift)
-    fprintf(fid, '%.2e,', L*n*1e6 + flat_top_s*1e6 + L*1e6);
-    fprintf(fid, '%.2e', L*n*1e6 + flat_top_s*1e6 + L*1e6 + 50e3);
+    if(roll_up)
+      fprintf(fid, '%.3e,', L*n*1e6 + L*1e6);
+      fprintf(fid, '%.3e',  L*n*1e6 + L*1e6 + flat_top_s*1e6);
+    else
+      fprintf(fid, '%.3e,', L*n*1e6 + flat_top_s*1e6 + L*1e6);
+      fprintf(fid, '%.3e', L*n*1e6 + flat_top_s*1e6 + L*1e6 + 50e3);
+    end% if
     fprintf(fid, '\n');
   fclose(fid);
 end% if  
@@ -107,7 +144,7 @@ end
 
 do_write_elegant = 1;
 if(do_write_elegant)
-  L = z0/nsteps;
+  L = z_ramp/nsteps;
   filename = '/tmp/lens_elegant.par.txt';
   fid = fopen(filename, 'w');
   for n=1:nsteps
@@ -137,7 +174,7 @@ end% if
 
 do_write_elegant = 0;
 if(do_write_elegant)
-  L = z0/nsteps;
+  L = z_ramp/nsteps;
   filename = '/tmp/lens_elegant.par.txt';
   fid = fopen(filename, 'w');
   for n=1:nsteps
@@ -159,7 +196,7 @@ if(do_write_elegant)
   fclose(fid);
 
   % drift instead of lens
-  L = z0/nsteps;
+  L = z_ramp/nsteps;
   filename = '/tmp/drift_elegant.par.txt';
   fid = fopen(filename, 'w');
   for n=1:nsteps
@@ -185,7 +222,7 @@ end% if
 
 do_write_elegant = 1;
 if(do_write_elegant)
-  L = z0/nsteps;
+  L = z_ramp/nsteps;
   filename = '/tmp/lens_elegant_X.par.txt';
   fid = fopen(filename, 'w');
   for n=1:nsteps
@@ -239,7 +276,7 @@ B1 = [beta_1 -alpha_1; -alpha_1 gamma_1];
 B0 = inv(R_tot)*B1*inv(R_tot');
 
 % add eventual error in beta to study beta beat
-beta_0 = B0(1,1) * (1 + d_beta_beta0);
+beta_0 = B0(1,1) * (1 + d_beta_beta0) * 1;
 alpha_0 = -B0(1,2);
 gamma_0 = (1+alpha_0^2) / beta_0;
 
@@ -324,12 +361,24 @@ b_beat_rel = b_beat / b_mat;
 z = [z (z+max(z))];
 np = [np max(np)*ones(1, length(np))];
 
+
+
 if(do_plot)
 beta_evol = squeeze(B0_evol(1,1,:));
+  set(0,'defaultaxesfontsize',24);
 [AX,H1,H2] = plotyy(z, np/1e6, z, beta_evol(1:end-1));
+
+% temp for Yuri
+%NN= 66;
+%s = z(1:NN)'
+%n_p = np(1:NN)'/1e6
+%save -ascii ramp.asc s n_p
 %hold on;
 %plot(z, beta_evol(1:end-1));
+grid on;
 xlabel('s [m]');
 set(get(AX(1),'Ylabel'),'String','n_p [cm^{-3}]'); 
 set(get(AX(2),'Ylabel'),'String','\beta [m]');
+set(get(AX(1),'Ylabel'),'FontSize',20);
+set(get(AX(2),'Ylabel'),'FontSize',20);
 end% if

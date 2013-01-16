@@ -19,7 +19,7 @@ my_write_qp2elefile(pp_qp, filename);
 %
 
 % plasma density for ramp
-n0 = 1.0e17;
+n0 = 3.6e17;
 % ref energy (should be equal to ref energy of rest of simulation)
 if( exist('pp_qp') )
   gamma = mean(pp_qp(:,6));
@@ -47,24 +47,35 @@ pp_XY = [ pp_X(:,1) pp_Y(:,2:3) pp_X(:,4) pp_Y(:,5:6) ];
 
 filename = '/Users/eadli/Dropbox/SLAC/quickpic/myData/dist_ele.asc';
 my_write_qp2elefile(pp_XY, filename);
-[sigx, sigy, sigxp, sigyp, gauss_sigx, gauss_sigy, gauss_sigxp, gauss_sigyp, emnx, emny, betax, betay, alphax, alphay, muE, sigEE, corzp, corzx, corzy] = my_ana_beam(pp_XY, [1 1 1 0 1]);
+[sigx, sigy, sigxp, sigyp, gauss_sigx, gauss_sigy, gauss_sigxp, gauss_sigyp, emnx, emny, betax, betay, alphax, alphay, muE, sigEE, corzp, corzx, corzy, slice] = my_ana_beam(pp_XY, [1 1 1 0 1 0 1]);
 
 
 
 %
 % 4) track beam in dump line
 %    cd /Users/eadli/Dropbox/SLAC/elegant/FACETSIM/ELESIM
-%    ./sim_elegant.sh -i /Users/eadli/Dropbox/SLAC/quickpic/myData/dist_ele.asc -d ../FACET_OPTICS/facet_v27.4.dynamic.ele   -b FACET -n off   -r ../FACET_OPTICS/R56Params/10.0mmR56.par   -l ../FACET_OPTICS/facet_v27.4.dump_only.lte    -o ../FACET_WORK/facet.out
+%    bash
+%    source ../SOURCE
+%   ./sim_elegant.sh -i /Users/eadli/Dropbox/SLAC/quickpic/myData/dist_ele.asc -d ../FACET_OPTICS/facet_v27.4.dynamic.ele   -b FACET -n off   -r ../FACET_OPTICS/R56Params/10.0mmR56.par   -l ../FACET_OPTICS/facet_simple_dump_only.lte    -o ../FACET_WORK/facet.out
+%    %%%%./sim_elegant.sh -i /Users/eadli/Dropbox/SLAC/quickpic/myData/dist_ele.asc -d ../FACET_OPTICS/facet_v27.4.dynamic.ele   -b FACET -n off   -r ../FACET_OPTICS/R56Params/10.0mmR56.par   -l ../FACET_OPTICS/facet_v27.4.dump_only.lte    -o ../FACET_WORK/facet.out
 
 
 %
 % analyze final beam
 %
 filename = '/Users/eadli/Dropbox/SLAC/elegant/FACETSIM/FACET_WORK/facet.out';
-pp_qp = my_read_elefile2qp(filename);
-[sigx, sigy, sigxp, sigyp, gauss_sigx, gauss_sigy, gauss_sigxp, gauss_sigyp, emnx, emny, betax, betay, alphax, alphay, muE, sigEE, corzp, corzx, corzy] = my_ana_beam(pp_qp, [1 1 1 0 1]);
-
-
+pp_DUMP = my_read_elefile2qp(filename);
+%filename_nomag = '/Users/eadli/Dropbox/SLAC/elegant/FACETSIM/FACET_WORK/facet.out_nomagnets';
+%pp_DUMP = my_read_elefile2qp(filename_nomag);
+%[sigx, sigy, sigxp, sigyp, gauss_sigx, gauss_sigy, gauss_sigxp, gauss_sigyp, emnx, emny, betax, betay, alphax, alphay, muE, sigEE, corzp, corzx, corzy, slice] = my_ana_beam(pp_DUMP, [1 1 1 0 1 0 0]);
+[sigx, sigy, sigxp, sigyp, gauss_sigx, gauss_sigy, gauss_sigxp, gauss_sigyp, emnx, emny, betax, betay, alphax, alphay, muE, sigEE, corzp, corzx, corzy, slice] = my_ana_beam(pp_DUMP, [0 0 0  0 1 0 0]); sigx, sigy
+%
+% CHECK IMAGING CONDITION
+%
+filename = '/Users/eadli/Dropbox/SLAC/elegant/FACETSIM/FACET_WORK/facet.mat';
+[M, M_arr] = my_read_elefile2mat(filename);
+m12 = M(1,2) 
+m34 = M(3,4) 
 
 %
 % for analysis: twiss in plasma lens
@@ -86,3 +97,44 @@ xlabel('s [m]');
 ylabel('beta [m]');
 legend('x', 'y');
 grid on;
+
+
+
+%
+% Calc ax, ay
+%
+filename = '/Users/eadli/Dropbox/SLAC/elegant/FACETSIM/FACET_WORK/facet.twi';
+[twiss, param] = my_read_elefile2twiss(filename);
+%n_lensend = (64*3+2);
+n_lensend = 1; %length(twiss);
+ax = sqrt(twiss(end,2) / twiss(n_lensend,2))
+ay = sqrt(twiss(end,4) / twiss(n_lensend,4))
+%plot(twiss(1:end,1), twiss(1:end,2));
+frac_plot = n_lensend / length(twiss);
+%frac_plot = 6/6;
+plot(twiss(1:end*frac_plot,1), twiss(1:end*frac_plot,2), 'b')
+hold on;
+plot(twiss(1:end*frac_plot,1), twiss(1:end*frac_plot,4), 'r')
+hold off;
+xlabel('s [m]');
+ylabel('beta [m]');
+legend('x', 'y');
+grid on;
+
+
+%
+%
+%
+%    p0 = 4 GeV
+%E = [1 2
+%n_loss = [38032  0 
+%    p0 = 8 GeV
+%E = [2 3
+%n_loss = [19801  0 
+%    p0 = 10 GeV
+%E = [3 4
+%n_loss = [186 0
+%    p0 = 20 GeV
+%E = [4 5 6
+%n_loss = [97120 4038 0
+     

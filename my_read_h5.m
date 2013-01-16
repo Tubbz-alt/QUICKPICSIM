@@ -8,6 +8,8 @@ dataname( dataname == '_' ) = '-'; % for some reason QuickPIC has slightly diffe
 
 %fileinfo = h5info(filename);
 % Read a subset of the data using info structure
-data = h5read(filename, dataname);
+
+%data = h5read(filename, dataname);
+data = hdf5read(filename, dataname); % OLD LAPTOP MATLAB
 return;
 

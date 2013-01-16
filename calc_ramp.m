@@ -1,36 +1,164 @@
 clear all;
 clf;
 
-% core plasma density
-n0     = 2.3E13; % [cm^-3]
-%n0     = 6.35E16 % [cm^-3]
-gamma = 39139
-% emittance?  irrelevant
+% ramp length
+z_ramp = 0.184; % [m]
 
 n = 0;
 p_min = 10;
 p_max = 19;
 n0_range = logspace(p_min, p_max, 100);
 
-n0_range = 4.5e17;
-n0_range = 2.3e16;
-n0_range = 3.6e17;
-n0_range = 5.4e16;
+% emittance?  irrelevant
+
+%gamma = 39139
+gamma = 48924
+gamma = 1e3/.511
+gamma = 20e3/.511
+
+% core plasma density
 n0_range = 6.0e16; % osiris
+n0_range = 2.211e16;
 n0_range = 1.0e17;
-n0_range = 3.6e17;
+n0_range = 2.5e17;
+
+n0_range = 1e17;
+
+n0_range = 1.0e16:1.0e16:5.0e17;
+
+n0_range = 2e17;
+gamma = 45000;
 
 % intial beta error
 d_beta_beta0 = 0.0;
 
+do_plot = 1;
 for n0 = n0_range,
   n = n + 1;
-  [b_mat(n), a_mat(n), b_0(n), a_0(n), b_min(n), a_min(n), b_max(n), a_max(n), b_beat_rel(n)] = my_calc_ramp(n0, gamma, d_beta_beta0, 1);
+  [b_mat(n), a_mat(n), b_0(n), a_0(n), b_min(n), a_min(n), b_max(n), a_max(n), b_beat_rel(n)] = my_calc_ramp(n0, gamma, d_beta_beta0, do_plot, z_ramp);
 end% for
+
+% vacuum waist
+b_star = b_0 ./ (1+a_0).^2
+ds = a_0 .* b_star
+
+% ramp demag
+b_demag = b_star ./ b_mat
 
 stop
 
-loglog(n0_range, b_mat, '-ok');
+semilogx(n0_range, b_demag, '-ok');
+grid on;
+xlabel('n_0 [/cm^3]');
+ylabel('\beta^* / \beta_{mat}');
+
+semilogx(n0_range, b_star*100, '-ok');
+grid on;
+xlabel('n_0 [/cm^3]');
+ylabel('\beta^* [cm]');
+
+semilogx(n0_range, ds*100, '-ok');
+grid on;
+xlabel('n_0 [/cm^3]');
+ylabel('\Delta s_{ramp} [cm]');
+
+
+stop
+
+%
+% 3 params graph
+%
+p_min = 10;
+p_max = 20;
+n0_range = logspace(p_min, p_max, 120);
+
+gamma = 20e3/.511
+z_ramp = 0.1; % [m]
+do_plot = 0;
+n = 0;
+for n0 = n0_range,
+  n = n + 1;
+  [b_mat(n), a_mat(n), b_0(n), a_0(n), b_min(n), a_min(n), b_max(n), a_max(n), b_beat_rel(n)] = my_calc_ramp(n0, gamma, d_beta_beta0, do_plot, z_ramp);
+end% for
+% vacuum waist
+b_star = b_0 ./ (1+a_0).^2;
+ds = a_0 .* b_star;
+% ramp demag
+b_demag = b_star ./ b_mat;
+
+
+subplot(1,2,2);
+semilogx(n0_range, b_demag, '-ok');
+grid on;
+xlabel('n_0 [/cm^3]');
+ylabel('\beta^* / \beta_{mat}');
+hold on;
+subplot(1,2,1);
+semilogx(n0_range, b_star*100, '-ok');
+grid on;
+xlabel('n_0 [/cm^3]');
+ylabel('\beta^* [cm]');
+hold on;
+
+% double length
+gamma = 20e3/.511
+z_ramp = 0.2; % [m]
+do_plot = 0;
+n = 0;
+for n0 = n0_range,
+  n = n + 1;
+  [b_mat(n), a_mat(n), b_0(n), a_0(n), b_min(n), a_min(n), b_max(n), a_max(n), b_beat_rel(n)] = my_calc_ramp(n0, gamma, d_beta_beta0, do_plot, z_ramp);
+end% for
+% vacuum waist
+b_star = b_0 ./ (1+a_0).^2;
+ds = a_0 .* b_star;
+% ramp demag
+b_demag = b_star ./ b_mat;
+subplot(1,2,2);
+semilogx(n0_range, b_demag, '-+r');
+grid on;
+xlabel('n_0 [/cm^3]');
+ylabel('\beta^* / \beta_{mat}');
+subplot(1,2,1);
+semilogx(n0_range, b_star*100, '-+r');
+grid on;
+xlabel('n_0 [/cm^3]');
+ylabel('\beta^* [cm]');
+
+% double energy
+gamma = 40e3/.511
+z_ramp = 0.1; % [m]
+do_plot = 0;
+n = 0;
+for n0 = n0_range,
+  n = n + 1;
+  [b_mat(n), a_mat(n), b_0(n), a_0(n), b_min(n), a_min(n), b_max(n), a_max(n), b_beat_rel(n)] = my_calc_ramp(n0, gamma, d_beta_beta0, do_plot, z_ramp);
+end% for
+% vacuum waist
+b_star = b_0 ./ (1+a_0).^2;
+ds = a_0 .* b_star;
+% ramp demag
+b_demag = b_star ./ b_mat;
+subplot(1,2,2);
+semilogx(n0_range, b_demag, '-xb');
+grid on;
+xlabel('n_0 [/cm^3]');
+ylabel('\beta^* / \beta_{mat}');
+subplot(1,2,1);
+semilogx(n0_range, b_star*100, '-xb');
+grid on;
+xlabel('n_0 [/cm^3]');
+ylabel('\beta^* [cm]');
+
+legend('E_0 = 20 GeV, z_{ramp} = 10 cm', 'E_0 = 20 GeV, z_{ramp} = 20 cm', 'E_0 = 40 GeV, z_{ramp} = 10 cm');
+
+
+
+
+stop
+
+%loglog(n0_range, b_mat, '-ok');
+semilogx(n0_range, b_demag, '-ok');
 hold on;
 %loglog(n0_range, b_max, '-g');
 %loglog(n0_range, b_min, '-m');

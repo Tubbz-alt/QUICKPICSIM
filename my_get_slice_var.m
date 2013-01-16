@@ -5,7 +5,7 @@ function [slice_mean,slice_sigma, slice_z, slice_N_z] = my_get_slice_var(pp, sli
 
 slice_z_fixed = 1;
 if nargin<4, slice_z_fixed = 0; slice_z_input=0; end
-if nargin<5, N_slices = 21; end
+if nargin<5, N_slices = 51; end
 if nargin<6, h_Nstd = 3; end
 
 % slice up beam in slice var 1
@@ -41,13 +41,22 @@ slice_N_z = slice_N_z(1:length(n_slices));
 
 % calc' quantities per slice 
 %n_slices(2)
-slice_mean(1) = mean(pp(1:n_slices(2), slice_var2));
-slice_sigma(1) = std(pp(1:n_slices(2), slice_var2));
+slice_mean(1) = mean(pp_sort(1:n_slices(2), slice_var2));
+slice_sigma(1) = std(pp_sort(1:n_slices(2), slice_var2));
 for n=2:length(n_slices),
-  slice_mean(n) = mean(pp(n_slices(n-1)+1:n_slices(n), slice_var2));
-  slice_sigma(n) = std(pp(n_slices(n-1)+1:n_slices(n), slice_var2));
+  slice_mean(n) = mean(pp_sort(n_slices(n-1)+1:n_slices(n), slice_var2));
+  slice_sigma(n) = std(pp_sort(n_slices(n-1)+1:n_slices(n), slice_var2));
 end% for
 
 % set NaN to 0  (will be weighted against (0) charge)
 slice_mean( isnan(slice_mean) ) = 0;
 slice_sigma( isnan(slice_mean) ) = 0;
+
+% extrapolate with zero to length of input slice.z
+if(slice_z_fixed)
+  if( length(n_slices) < length(slice_z_input) )
+    slice_mean( (length(n_slices)+1):length(slice_z_input)-1) = 0;
+    slice_sigma( (length(n_slices)+1):length(slice_z_input)-1) = 0;   
+    slice_N_z( (length(n_slices)+1):length(slice_z_input)-1) = 0;
+  end% if
+end% if

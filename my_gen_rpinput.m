@@ -69,27 +69,34 @@ else
 end% if
 R_bubble = (1/0.84) * 2 / k_p * sqrt(max(I_peak) / 17e3)
 %Box_X_exact = max(1.0 * 4 * R_bubble, max(10*max(beam_sigma_x), 10*max(beam_sigma_y))) % [m]
-Box_X_exact = 1.5*max(1.0 * 4 * R_bubble, max(5*max(beam_sigma_x), 5*max(beam_sigma_y))) % [m]
+Box_X_exact = 1.8*max(1.0 * 4 * R_bubble, max(5*max(beam_sigma_x), 5*max(beam_sigma_y))) % [m]
 % if tilted beams add space in x
 if( (sum(abs(tilt_x))+sum(abs(tilt_y))) > 0)
   Box_X_exact = Box_X_exact +2*sqrt(3)*beam_sigma_z*max( max(abs(tilt_x(2,:))), max(abs(tilt_y(2,:))));
 end% if
-Box_X = 4 * ceil(Box_X_exact*1e6/10)*10 % [um] - round the box size
+Box_X = 1.5 * ceil(Box_X_exact*1e6/10)*10 % [um] - round the box size
 Box_X = max(Box_X); % if multiple bunches, use largest Box_X calc
 % make odd number of transverse cells (in order to center the beam)
 Box_X = Box_X + 1; % if multiple bunches, use largest Box_X calc
 %Box_X = 580
 Box_Y = Box_X % [um]
-Box_Z_exact = max(7.5*max(beam_sigma_z), 1.5 * lambda_p) % [um]
+Box_Z_exact = max(6.0*max(beam_sigma_z), 2.5 * lambda_p) % [um]
 Box_Z = round(Box_Z_exact*1e6/20)*20 % [um] - round the box size
 %Box_Z = 190
 Box_Z = Box_Z + 1;
+%
+% TEMP BOX REDUCE
+%
+%Box_X = Box_X * 0.6;
+%Box_Y = Box_Y * 0.6;
+%Box_Z = Box_Z * 0.6;
 skin_frac = 1/20; % grid size in fractions of skin-depth
 INDX = floor( log(Box_X*1e-6 * k_p / skin_frac) / log(2) )
 INDY = floor( log(Box_Y*1e-6 * k_p / skin_frac) / log(2) )
 INDZ = floor( log(Box_Z*1e-6 * k_p / skin_frac) / log(2) )
-INDX = 9;
-INDY = 9;
+INDX = 9 % temp
+INDY = 9 % temp
+Box_Z = Box_Z - 50 % temp
 % force min 2^6 per dim
 if( INDX < 6 )
   INDX = 6;
@@ -110,11 +117,11 @@ end% while
 if(~beam_z_is_custom)
   if( beam_z_pos == -1)
     % if user gives nothing, or -1, put (all..) bunches on Box_Z * 1/3
-    beam_z_pos = round(Box_Z * 1/3*1.1) * ones(N_beams, 1)
+    beam_z_pos = round(Box_Z * 1/3*1.4) * ones(N_beams, 1)
   end% if
 end% if
 if( beam_z_pos == -1)
-  beam_z_pos = round(Box_Z* 1/3*1.1) * ones(N_beams, 1);
+  beam_z_pos = round(Box_Z* 1/3*1.4) * ones(N_beams, 1);
 end% if
 
 % Where to put bunches transversally if tilt?
@@ -305,7 +312,8 @@ if( beam_z_is_custom ),
   % for user z-distribution, this number must be "large"
   fprintf(fidout, [' MIN_BEAM_PARTICLE = 5000000' '\n']  );
 else
-  fprintf(fidout, [' MIN_BEAM_PARTICLE = 8' '\n']  );
+%  fprintf(fidout, [' MIN_BEAM_PARTICLE = 8' '\n']  );
+   fprintf(fidout, [' MIN_BEAM_PARTICLE = 5000000' '\n']  ); % update after input from W. An 2012-05-14
 end% if
 fprintf(fidout, [' NPX =  ' num2str(2^NPX) ', NPY = ' num2str(2^NPY) ', NPZ = ' num2str(2^NPZ) '\n']);
 fprintf(fidout, [' Charge = -1.0' '\n']  );
