@@ -2,6 +2,9 @@
 % QuickPIC Matlab rpinput generation example script
 % E. Adli, Dec 13, 2011
 %
+% Last update: E. Adli, Jan 15, 2013
+%
+
 clear all;
 clf;
 

@@ -94,9 +94,9 @@ skin_frac = 1/20; % grid size in fractions of skin-depth
 INDX = floor( log(Box_X*1e-6 * k_p / skin_frac) / log(2) )
 INDY = floor( log(Box_Y*1e-6 * k_p / skin_frac) / log(2) )
 INDZ = floor( log(Box_Z*1e-6 * k_p / skin_frac) / log(2) )
-INDX = 9 % temp
-INDY = 9 % temp
-Box_Z = Box_Z - 50 % temp
+%INDX = 9 % temp
+%INDY = 9 % temp
+%Box_Z = Box_Z - 50 % temp
 % force min 2^6 per dim
 if( INDX < 6 )
   INDX = 6;

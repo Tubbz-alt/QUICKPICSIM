@@ -47,14 +47,14 @@ Example commands to login and use and to the UCLA cluster :
 
 login :
 	ssh -Y eadli@hoffman2.idre.ucla.edu
-make a folder on the scratch :
-	mkdir /u/scratch/eadli
+go to your scratch folder:
+        cd $SCRATCH
 make a simulation folder :
-	mkdir /u/scratch/eadli/testrun
-copy the last version of qpic :
-	cp ~eadli/QPIC_EXE/qpic.e___16jun2011 /u/scratch/eadli/testrun/qpic.e
+	mkdir testrun
+get the last version of qpic, for example from :
+	cp ~eadli/QPIC_EXE/qpic.e /u/scratch/e/eadli/testrun/qpic.e
 From your the computer where you generated your rpinput, copy your rpinput to the cluster :
-	scp rpinput eadli@hoffman2.idre.ucla.edu:/u/scratch/eadli/testrun/
+	scp rpinput eadli@hoffman2.idre.ucla.edu:/u/scratch/e/eadli/testrun/
 
 
 Example of how to create a script for QPIC job submission :
