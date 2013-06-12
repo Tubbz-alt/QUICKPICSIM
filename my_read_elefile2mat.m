@@ -11,11 +11,13 @@ system(syscmd);
 el_all = load('/tmp/data3.txt');
 M_cum = eye(6,6);
 %
+
 % the following stores all CUMULATIVE submatrices... (elegant
 % stores cum matrices from 1 to n, not from n-1 to n.)
 %   (I kept the code below in case I need to get sub-matrices later)
-%for n=1:size(el_all,1);
-for n=size(el_all,1):size(el_all,1);
+%for n=size(el_all,1):size(el_all,1);   % USE THIS TO SPEED UP IF ONLY M_cum is needed
+for n=1:size(el_all,1);
+%  el_all(n, 0*6+[1:6])
   M(1,:,n) = el_all(n, 0*6+[1:6]);
   M(2,:,n) = el_all(n, 1*6+[1:6]);
   M(3,:,n) = el_all(n, 2*6+[1:6]);

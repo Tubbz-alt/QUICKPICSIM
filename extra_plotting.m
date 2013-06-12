@@ -1,3 +1,115 @@
+z_ion_head =  my_flatten_struct(qp, 'z_ion_head');
+x_ion_head =  my_flatten_struct(qp, 'x_ion_head');
+x_zero_EcB =  my_flatten_struct(qp, 'x_zero_EcB');
+EcB_zero =  my_flatten_struct(qp, 'EcB_zero');
+EcB_at_beam =  my_flatten_struct(qp, 'EcB_at_beam');
+plot([qp(:).s_timestep]*100, my_flatten_struct(qp, 'EcB_at_beam'), '-xk');
+hold on;
+plot([qp(:).s_timestep]*100, my_flatten_struct(qp, 'EcB_zero'), '-+r');
+hold off;
+grid on;
+xlabel('s [cm]');
+ylabel('E-cB [GV/m]');
+legend('<EcB> beam',  '<EcB> grid with min. EcB', 'Location', 'Best');
+title_text = datadir;
+title(title_text, 'interpreter', 'None');
+
+
+stop
+
+plot([qp(:).s_timestep]*100, my_flatten_struct(qp, 'x_beam_EcB'), '-xk');
+hold on;
+plot([qp(:).s_timestep]*100, my_flatten_struct(qp, 'x_zero_EcB'), '-+r');
+hold off;
+grid on;
+xlabel('s [cm]');
+ylabel('<x> [um]');
+legend('<x> Beam',  '<x> F\perp = 0', 'Location', 'Best');
+title_text = datadir;
+title(title_text, 'interpreter', 'None');
+
+stop
+%
+%
+%
+
+
+% c_fudge
+amp_corr = 5.0494; % crcy was wrong by a factor (k_p / sqrt(2))*z
+PI_matched_hose = [0.10 0.27 0.63 0.95  1.15  1.40 1.51 1.63 1.64 1.64 1.64] / amp_corr
+PI_unmatched_hose = [NaN 0.27 0.65  0.87  0.97  1.0  1.01 NaN  1.0 NaN 1.00] / amp_corr
+FI_matched_hose = [NaN 0.25  0.39  0.64  0.86   0.94  1.06  1.12  1.03  1.03  1.01 ] / amp_corr;
+FI_unmatched_hose =  [NaN 0.25  0.37  0.60   0.73  0.78  0.77 NaN  0.82 NaN 0.82] / amp_corr;
+sr = 5./sqrt([2^99 2^18 2^14 2^12 2^8 2^5 2^4 2^3 2^2 2^1 2^0 2^(-1)]);
+sr = sr(2:end);
+
+plot(sr, fliplr(FI_matched_hose), '-xb');
+hold on;
+plot(sr, fliplr(FI_unmatched_hose), ':ob');
+plot(sr, fliplr(PI_matched_hose), '-xr');
+plot(sr, fliplr(PI_unmatched_hose), ':or');
+hold off;
+grid on;
+xlabel('\sigma_r [um]');
+ylabel('c_r \times c_\psi [-]');
+legend('FI mat', 'FI unmat', 'PI mat', 'PI ummat', 'Location', 'Best');
+ myaxis = axis;
+ axis([1.23 myaxis(2) myaxis(3) myaxis(4)]);
+
+%stop
+
+%
+% hosing growth analysis (corrected for ctm)
+%
+z_ion_head =  my_flatten_struct(qp, 'z_ion_head');
+x_ion_head =  my_flatten_struct(qp, 'x_ion_head');
+x_tail =  my_flatten_struct(qp, 'x_tail');
+x_hose = x_tail-x_ion_head;
+plot([qp(:).s_timestep]*100, x_hose, '-xb'); % osc
+% abs osc 
+ind_raise = 1;
+ind_n = 2;
+while ind_n <= length(x_hose),
+  x_fitmax = 55; % before upset by sheath
+  if( (abs(x_hose(ind_n)) > abs(x_hose(ind_raise(end)))) && (abs(x_hose(ind_n)) < x_fitmax) )
+    ind_raise = [ind_raise ind_n];
+  end% if
+  if(abs(x_hose(ind_n)) > x_fitmax)
+    ind_n = length(x_hose)+1;
+  end% if
+  ind_n = ind_n + 1;
+end% while
+%plot([qp(:).s_timestep]*100, abs(x_hose), '-xb'); % abs osc
+hold on;
+s_raise = [qp(ind_raise).s_timestep];
+x_raise = abs(x_hose(ind_raise));
+plot(s_raise*100, x_raise, '-or'); % abs osc
+% normalize x_raise to x_raise(1) = 1;
+%x_raise = x_raise - x_raise(1) + 1;
+amp_sim = x_raise / x_raise(1);
+% fit exp growth param
+n0 = 1e17;
+n_sigma_fit = (3+qp(1).PP(n_beam).hose_calc.n_sigma);
+z = n_sigma_fit*qp(1).PP(1).sigma_z * 1e-6; % z for hose fit corresponds to z where tail is tracked
+Gamma = qp_Gamma(1);
+save -mat /tmp/fitfunc.dat n0 z s_raise amp_sim Gamma
+addpath('~/Dropbox/SLAC/E200/E200_hose/');
+fit_result = fminsearch('E200_hose_fit', 1.0);
+c_fudge_fit = fit_result(1)
+% plot fit
+[A, amp_fit] = E200_calc_hose_A(n0, Gamma, s_raise, z, c_fudge_fit);
+plot(s_raise*100, x_raise(1)*amp_fit, '-+k'); % abs osc
+hold off
+grid on;
+xlabel('s [cm]');
+ylabel('x_{tail} [um]');
+legend(['x @ ' sprintf('%0.1f', n_sigma_fit) '\sigma_z'], 'envl.', ['envl. fit, c_{fudge} = ' sprintf('%0.1e', c_fudge_fit)], 'Location', 'Best');
+title_text = datadir;
+title(title_text, 'interpreter', 'None');
+
+
+stop
+
 %
 % some extra plotting here
 %
@@ -893,3 +1005,73 @@ hold on;
  hh = plot([mean_E-E_mean*frac mean_E-E_mean*frac+eps], [1e-5 1e0], '-g');  
  set(hh,'LineWidth',2)
 hold off;
+
+
+
+%
+%
+%
+plot([qp(:).s_timestep]*100, my_flatten_struct(qp, 'x_head'), '-ob');
+hold on;
+plot([qp(:).s_timestep]*100, my_flatten_struct(qp, 'x_ion_head'), '-xr');
+plot([qp(:).s_timestep]*100, my_flatten_struct(qp, 'z_ion_head'), '-+g');
+hold off;
+grid on;
+xlabel('s [cm]');
+ylabel('<x>, z [um]');
+legend('Eroded beam','New head (not eroded)',  'z new head', 'Location', 'Best');
+title_text = datadir;
+title(title_text, 'interpreter', 'None');
+
+
+
+
+
+
+
+
+
+
+
+% at 40 cm
+z0_0 = -52.0; % assumed start of beam w/o head erosion
+%z0_0 = -45.2; % assumed start of beam w/o head erosion
+% FI emittance matched
+FI_z040 = z0_0 - fliplr([5.2 -15.6 -30.4 -38.2 -41.6 -44.2 -44.2 -44.2 NaN NaN]);
+FI_ctm40 = fliplr([-96.4 -63.9 -42.6 -30.22 -22.2 -16.4 -8.9 -4.7 NaN NaN]);
+% PI emittance matched
+FI_z040 = z0_0 - fliplr([-27.8 -37.3 -42.5 -46.0 -46.0  -47.7 -51.2 NaN   NaN  -52.0]);
+FI_ctm40 = fliplr([-26.6 -21.4 -16.4 -10.7  -8.4  -6.7  -5.6  NaN NaN -5.6]);
+% FI, constant sr=5
+FI_z040 = z0_0 - fliplr([ 5.2  -13.9  -19.1 -35.6  -33.8 -33.8  NaN -32.9  NaN NaN]);
+FI_ctm40 = fliplr([ -96.4 -32.8 -14.2 -7.0 -4.6 -3.8  NaN -3.1 NaN NaN]);
+% PI, constant sr=5
+%FI_z040 = z0_0 - fliplr([-27.8 -30.4 -41.6  -39.0 -39.0  NaN  NaN -39.0 NaN -39.0 ]);
+%FI_ctm40 =  fliplr([-26.6 -13.3  -7.1 -4.8 -4.3  NaN  NaN -4.2 NaN  -4.2]);
+
+sr = 5./sqrt([2^99 2^18 2^14 2^12 2^8 2^5 2^4 2^3 2^2 2^1 2^0]);
+sr = sr(2:end);
+%FI_z040 = [-1 FI_z040]; 
+ab_pow = 4/2;
+or_pow = 2/2;
+abscissa = sr.^(ab_pow); 
+n_start = 2; % 1: include art. zero, 2: skip art. zero
+hh = plot(abscissa(n_start:end), (-FI_ctm40(n_start:end)).^(or_pow), '-xr');
+set(hh, 'MarkerSize', 25)
+hold on;
+hh = plot(abscissa(n_start:end), (-FI_z040(n_start:end)).^(or_pow), '-ob');
+set(hh, 'MarkerSize', 25)
+hh = plot(abscissa(n_start:end), FI_ctm40(n_start:end) ./ FI_z040(n_start:end)*1, '-+m');
+set(hh, 'MarkerSize', 25)
+hold off;
+grid on;
+xlabel(['\sigma_r [um]' ' pow ' sprintf('%0.1f', ab_pow)]);
+%xlabel(['prop.to. \epsilon [um]' ' pow ' sprintf('%0.1f', ab_pow.^2)]);
+ylabel('Ers. front, and ctm at ers. front @ 40 cm [um]');
+title('FI, emittance matched');
+title('FI, emittance, \sigma_r = 5 um');
+%title('PI, emittance matched');
+%title('PI, emittance, \sigma_r = 5 um');
+legend('ctm [um]', 'ers.front [um]', 'ctm/ers.front', 'Location', 'Best');
+myaxis = axis;
+%axis([0 myaxis(2) myaxis(3) 100]);

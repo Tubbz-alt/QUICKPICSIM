@@ -2,7 +2,8 @@ clear all;
 clf;
 
 % ramp length
-z_ramp = 0.184; % [m]
+%z_ramp = 0.184; % [m]
+z_ramp = 0.10; % [m]
 
 n = 0;
 p_min = 10;
@@ -26,20 +27,25 @@ n0_range = 1e17;
 
 n0_range = 1.0e16:1.0e16:5.0e17;
 
-n0_range = 2e17;
-gamma = 45000;
+n0_range = 1e17;
+gamma = 39139;
+%n0_range = 2e16;
+%gamma = 25e3/.511;
 
 % intial beta error
 d_beta_beta0 = 0.0;
 
+% roll
+roll_up = 0; % 1: up ramp, 0: down ramp
+
 do_plot = 1;
 for n0 = n0_range,
   n = n + 1;
-  [b_mat(n), a_mat(n), b_0(n), a_0(n), b_min(n), a_min(n), b_max(n), a_max(n), b_beat_rel(n)] = my_calc_ramp(n0, gamma, d_beta_beta0, do_plot, z_ramp);
+  [b_mat(n), a_mat(n), b_0(n), a_0(n), M_tot, b_min(n), a_min(n), b_max(n), a_max(n), b_beat_rel(n)] = my_calc_ramp(n0, gamma, d_beta_beta0, do_plot, z_ramp, roll_up);
 end% for
 
 % vacuum waist
-b_star = b_0 ./ (1+a_0).^2
+b_star = b_0 ./ (1+a_0.^2)
 ds = a_0 .* b_star
 
 % ramp demag
@@ -68,9 +74,10 @@ stop
 %
 % 3 params graph
 %
-p_min = 10;
-p_max = 20;
-n0_range = logspace(p_min, p_max, 120);
+p_min = 15;
+p_max = 18;
+n0_range = logspace(p_min, p_max, 30);
+d_beta_beta0 = 0;
 
 gamma = 20e3/.511
 z_ramp = 0.1; % [m]
@@ -81,7 +88,7 @@ for n0 = n0_range,
   [b_mat(n), a_mat(n), b_0(n), a_0(n), b_min(n), a_min(n), b_max(n), a_max(n), b_beat_rel(n)] = my_calc_ramp(n0, gamma, d_beta_beta0, do_plot, z_ramp);
 end% for
 % vacuum waist
-b_star = b_0 ./ (1+a_0).^2;
+b_star = b_0 ./ (1+a_0.^2);
 ds = a_0 .* b_star;
 % ramp demag
 b_demag = b_star ./ b_mat;
@@ -110,7 +117,7 @@ for n0 = n0_range,
   [b_mat(n), a_mat(n), b_0(n), a_0(n), b_min(n), a_min(n), b_max(n), a_max(n), b_beat_rel(n)] = my_calc_ramp(n0, gamma, d_beta_beta0, do_plot, z_ramp);
 end% for
 % vacuum waist
-b_star = b_0 ./ (1+a_0).^2;
+b_star = b_0 ./ (1+a_0.^2);
 ds = a_0 .* b_star;
 % ramp demag
 b_demag = b_star ./ b_mat;
@@ -135,7 +142,7 @@ for n0 = n0_range,
   [b_mat(n), a_mat(n), b_0(n), a_0(n), b_min(n), a_min(n), b_max(n), a_max(n), b_beat_rel(n)] = my_calc_ramp(n0, gamma, d_beta_beta0, do_plot, z_ramp);
 end% for
 % vacuum waist
-b_star = b_0 ./ (1+a_0).^2;
+b_star = b_0 ./ (1+a_0.^2);
 ds = a_0 .* b_star;
 % ramp demag
 b_demag = b_star ./ b_mat;

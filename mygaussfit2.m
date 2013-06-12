@@ -29,10 +29,12 @@ S = sum( ( f_x - y ).^2 );
 % visu (comment when running)
 if(0)
   axis([min(x) max(x) min(y) max(y)]);
-  plot(x, f_x, '-xr');
+  plot(x, f_x, '-r');
   hold on;
   plot(x, y, '-xb');
   hold off;
-%  legend('gauss fit', 'dist');
+  legend('gauss fit', 'dist');
+  grid on;
+  % pause;
 end% if
 

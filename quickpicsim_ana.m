@@ -2,7 +2,7 @@
 % QuickPIC Matlab Analysis main script
 % E. Adli, Dec 13, 2011
 %
-% Last update: E. Adli, Jan 15, 2013
+% Last update: E. Adli, Jun 12, 2013
 %
 
 clear all;
@@ -17,10 +17,118 @@ clf;
 % update working dir to your QUICKPICSIM folder
 working_dir = '/Users/eadli/Dropbox/SLAC/quickpic/QUICKPICSIM/';
 
-% update data dir to your quickpic output folder (folder which contains the rp input file)
-%datadir = '/Users/eadli/templ/ion/RB/l8040/';
-datadir = '~/quicksimoutput/testrun/'
-datadir = '/Users/eadli/templ/FACETII/wb1T/'
+%
+% CONVERGENCE TEST
+datadir = '/Users/eadli/templ/ctm/FI_sr1_3/';
+datadir = '/Users/eadli/templ/ctm/FI_sr1_3_999/';
+datadir = '/Users/eadli/templ/ctm/FI_sr1_3_101010/';
+% plus/minus in box scan
+datadir = '/Users/eadli/templ/ctm/sr4/';
+datadir = '/Users/eadli/templ/ctm/sr4_p5/';
+datadir = '/Users/eadli/templ/ctm/sr4_m5/';
+% TILT SCAN (FI)
+datadir = '/Users/eadli/templ/ctm/sr4_t000/';
+datadir = '/Users/eadli/templ/ctm/sr4/';
+datadir = '/Users/eadli/templ/ctm/sr4_t010/';
+datadir = '/Users/eadli/templ/ctm/sr4_t020/';
+%PI_sr1_3___t0025 - t010 - tilt tests
+datadir = '/Users/eadli/templ/ctm/PI_sr1_3___t0025/';
+datadir = '/Users/eadli/templ/ctm/PI_sr1_3___t010/';
+datadir = '/Users/eadli/templ/ctm/PI_sr1_3/';
+%PI_sr1_3___t001 - convergence tests
+datadir = '/Users/eadli/templ/ctm/PI_sr1_3___t001/';
+%datadir = '/Users/eadli/templ/ctm/PI_sr1_3___t001___999/';
+%datadir = '/Users/eadli/templ/ctm/PI_sr1_3___t001___101010/';
+% EMITT SCAN unmatched, const size - FI
+datadir = '/Users/eadli/templ/ctm/FI_sr5_em5/';
+%datadir = '/Users/eadli/templ/ctm/FI_sr5_em4/';
+%datadir = '/Users/eadli/templ/ctm/FI_sr5_em3/';
+%datadir = '/Users/eadli/templ/ctm/FI_sr5_em1_8/';
+%datadir = '/Users/eadli/templ/ctm/FI_sr5_em1_3/';
+%datadir = '/Users/eadli/templ/ctm/FI_sr5_em0_9/';
+%datadir = '/Users/eadli/templ/ctm/FI_sr5_em0_1/';
+%datadir = '/Users/eadli/templ/ctm/FI_sr5_em0_01/';
+% EMITT SCAN unmatched, const size - PI
+datadir = '/Users/eadli/templ/ctm/PI_sr5_em5/';
+%datadir = '/Users/eadli/templ/ctm/PI_sr5_em4/';
+%datadir = '/Users/eadli/templ/ctm/PI_sr5_em3/';
+%datadir = '/Users/eadli/templ/ctm/PI_sr5_em1_8/';
+%datadir = '/Users/eadli/templ/ctm/PI_sr5_em1_3/';
+%datadir = '/Users/eadli/templ/ctm/PI_sr5_em0_9/';
+%datadir = '/Users/eadli/templ/ctm/PI_sr5_em0_1/';
+%datadir = '/Users/eadli/templ/ctm/PI_sr5_em0_01/';
+% EMITT SCAN (matched) - PI
+%datadir = '/Users/eadli/templ/ctm/PI_sr5/';
+%datadir = '/Users/eadli/templ/ctm/PI_sr4/';
+%datadir = '/Users/eadli/templ/ctm/PI_sr3/';
+%datadir = '/Users/eadli/templ/ctm/PI_sr1_8/';
+%datadir = '/Users/eadli/templ/ctm/PI_sr1_3/';
+%datadir = '/Users/eadli/templ/ctm/PI_sr0_9/';
+%datadir = '/Users/eadli/templ/ctm/PI_sr0_3/';
+%datadir = '/Users/eadli/templ/ctm/PI_sr0_1/';
+%datadir = '/Users/eadli/templ/ctm/PI_sr0_04/';
+datadir = '/Users/eadli/templ/ctm/PI_sr0_01/';
+% EMITT SCAN (matched) - FI
+%datadir = '/Users/eadli/templ/ctm/FI_sr5/';
+%datadir = '/Users/eadli/templ/ctm/FI_sr4/';
+%datadir = '/Users/eadli/templ/ctm/FI_sr3/';
+%datadir = '/Users/eadli/templ/ctm/FI_sr1_8/';
+%datadir = '/Users/eadli/templ/ctm/FI_sr1_3/';
+%datadir = '/Users/eadli/templ/ctm/FI_sr0_9/'
+%datadir = '/Users/eadli/templ/ctm/FI_sr0_3/';
+%datadir = '/Users/eadli/templ/ctm/FI_sr0_1/';
+%datadir = '/Users/eadli/templ/ctm/FI_sr0_04/';
+%datadir = '/Users/eadli/templ/ctm/FI_sr0_01/';
+
+datadir = '/Users/eadli/templ/ctm/PI_sr1_3/';
+datadir = '/Users/eadli/templ/ctm/PI_sr1_3___t001/';
+datadir = '/Users/eadli/templ/ctm/PI_sr1_3___t001___999/';
+datadir = '/Users/eadli/templ/ctm/FI_sr4/';
+
+% LC OPTIM: T=1.0
+datadir = '/Users/eadli/templ/LC/O2wb/'
+datadir = '/Users/eadli/templ/LC/O1long/'
+datadir = '/Users/eadli/templ/LC/O2long/'
+
+% Ken SB
+datadir = '/Users/eadli/templ/SB/1e17/'
+datadir = '/Users/eadli/templ/SB/2e17/'
+datadir = '/Users/eadli/templ/SB/4e17/'
+datadir = '/Users/eadli/templ/SB/2e17_40/'
+datadir = '/Users/eadli/templ/SB/2e17_60/'
+
+% LC OPTIM: T=1.0
+datadir = '/Users/eadli/templ/LC/O2wb/'
+%datadir = '/Users/eadli/templ/LC/O2long/'
+
+% exp hosing 2013
+% beta 5 x 0.5 m2
+datadir = '/Users/eadli/templ/hose_exp/beta5/2e17_t0/'
+datadir = '/Users/eadli/templ/hose_exp/beta5/2e17_t05/'
+datadir = '/Users/eadli/templ/hose_exp/beta5/4e17_t05_em2/'
+datadir = '/Users/eadli/templ/hose_exp/beta5/5e16_t05_em2/'
+datadir = '/Users/eadli/templ/hose_exp/beta5/5e16_t05/'
+datadir = '/Users/eadli/templ/hose_exp/beta5/2_7e17_40_t05/'
+datadir = '/Users/eadli/templ/hose_exp/beta5/1_1e17_60_t05/'
+datadir = '/Users/eadli/templ/hose_exp/beta5/6_6e16_60_t05/'
+% beta 0.5 x 0.06 m2
+datadir = '/Users/eadli/templ/hose_exp/beta05/2_7e17_40_t05/'
+% beta 1 x 0.1 m2
+datadir = '/Users/eadli/templ/hose_exp/beta1/2_7e17_40_t05/'
+datadir = '/Users/eadli/templ/hose_exp/beta1/1_1e17_40_t05/'
+datadir = '/Users/eadli/templ/hose_exp/beta1/6_6e16_60_t05/'
+datadir = '/Users/eadli/templ/hose_exp/beta1/1_1e17_60_t05/'
+datadir = '/Users/eadli/templ/hose_exp/beta1/1_1e17_40_t05_10/'
+%datadir = '/Users/eadli/templ/hose_exp/beta1/1_1e17_60_t05_10/'
+datadir = '/Users/eadli/templ/hose_exp/beta1/2_7e17_40_t05_10/'
+datadir = '/Users/eadli/templ/hose_exp/beta1/2_7e17_40_t01_10/'
+datadir = '/Users/eadli/templ/hose_exp/beta1/1_1e17_60_t05_10/'
+datadir = '/Users/eadli/templ/hose_exp/beta1/2_7e17_60_t01_10/'
+
+
+datadir = '/Users/eadli/templ/ctm/FI_sr5/';
+datadir = '~/templ/oldqp/n3e17_tilt001/';
+datadir = '~/templ/dumpwork/3e17_se/';
 
 
 %
@@ -36,11 +144,11 @@ do_plot = 1;
 
 % start plot  3D timestep, -1: start from start
 n_3D_start = -1;
-%n_3D_start = 130;
+%n_3D_start = 1400;
 
 % -1: go all the way to end
 n_3D_end = -1;
-%n_3D_end = 3100;
+%n_3D_end = 300;
 
 % choose output to analyze
 do_QEB_3D = 0;
@@ -57,6 +165,7 @@ do_both_plot_types = 1; % only if above is 1
 %n_slice_plot = 21; % z=-20
 %n_slice_plot = 31; % z=20
 n_slice_plot = 26; % z=0
+do_calc_hose_ctm = 1;
 do_QEB = 1;
 do_QEP = 1;
 do_FEZ = 1; 
@@ -65,17 +174,18 @@ do_FBY = 0;
 do_FEY = 0;
 do_FBX = 0;
 do_FBZ = 0;
-do_Eprof = 1;
+do_Eprof = 0;
 do_Eprof_allview = 0;
 do_EcrossB = 0;
 do_FOCUSAXIS = 0;
 do_QEB_FEZ = 0;
 do_beam_phase_space_plot = 1;
-do_translopeEB = 0;
+do_translopeEB = 1;
 %translopeEB_dz = -3; % dz [um] from center of box
-translopeEB_dz = 0; % dz [um] from center of box
+translopeEB_dz = 50; % dz [um] from center of box
+translopeEB_dz = 'ion_head'; % if 'ion_head' use (z1_ion_head + z_ion_head)/2 to calculate z-slice of EB calc
+%translopeEB_dz = 'hose_tail'; % if 'hose_tail' use (z1_tail_start + z_tail_end)/2 to calculate z-slice of EB calc
 
- 
 % more plot options
 do_fixed_axes = 0;  % set manually below, if not auto-scale per graph
 % for movie-makers
@@ -156,6 +266,7 @@ NBeams = my_get_quickpic_param(myfile_rpinput, 'NBeams')
 for n = 1:NBeams,
   qp_N(n) = my_get_quickpic_param(myfile_rpinput, 'Num_Particle', n)
   qp_Gamma(n) = my_get_quickpic_param(myfile_rpinput, 'Gamma', n) 
+  X0(n) = my_get_quickpic_param(myfile_rpinput, 'Parameter_Array(1:1,1:3)', n);
 end% for
 DFQEBSLICE = my_get_quickpic_param(myfile_rpinput, 'DFQEBSLICE')
 DFQEPSLICE = my_get_quickpic_param(myfile_rpinput, 'DFQEBSLICE')
@@ -172,7 +283,7 @@ end% if
 % LOOP 3D time step
 n_3D_counter = 0;
 if(n_3D_start < 0)
-  n_3D_timestep_start = DFQEBSLICE;
+  n_3D_timestep_start = 0;
 else
   n_3D_timestep_start = n_3D_start;
 end% if
@@ -184,7 +295,13 @@ else
   disp(['Looping from ' num2str(n_3D_start) ' to timestep ' num2str(n_3D_end) ' out of rpinput-specified ' num2str(floor(TEND/DT)) ' timesteps.']);
 end% if
 for n_3D_timestep = n_3D_timestep_start:DFQEBSLICE:N_3D_timestep,
-n_3D_timestep_str = sprintf('%.4d', n_3D_timestep');
+% no info of fields etc for time step 0 (bean info only), thus put
+% 0 at first
+if( n_3D_timestep == 0)
+  n_3D_timestep_str = sprintf('%.4d', DFQEBSLICE');
+else
+  n_3D_timestep_str = sprintf('%.4d', n_3D_timestep');
+end% if
 n_3D_counter = n_3D_counter + 1;
 % skip update for beam to store all data, took too much memory
 %n_3D_counter_beam = n_3D_counter;
@@ -249,9 +366,9 @@ end% if
 scale_x = Box_X / 2^INDX;
 scale_y = Box_Y / 2^INDY;
 scale_z = Box_Z / 2^INDZ;
-offset_x0 = Box_X/2; % assume initial beam is put in the middle of the box
-offset_y0 = Box_Y/2; % assume initial beam is put in the middle of the box
-offset_z0 = Box_Z/2; % assume initial beam is put in the middle of the box
+offset_x0 = Box_X/2; % middle of box
+offset_y0 = Box_Y/2; % middle of box
+offset_z0 = Box_Z/2; % middle of box
 scale_E = 1;
 scale_B = 1;
 scale_rho = 1;
@@ -307,10 +424,10 @@ if(do_beam_phase_space_force_t0 )
   n_3D_timestep = 0; % override, to look at a single time step dump
 end% if
 %  n_3D_timestep = 1240; % override, to look at a single time step dump
-n_3D_timestep_str = sprintf('%.4d', n_3D_timestep');
+n_3D_timestep_str_beam = sprintf('%.4d', n_3D_timestep');
 
 % load phase space beam (merge all beam parts)
-qp(n_3D_counter_beam).PP(n_beam).BEAM = my_get_quickpic_phasespace(datadir, n_beam_str, n_3D_timestep_str); % auto-extracts beam part filenames exists
+qp(n_3D_counter_beam).PP(n_beam).BEAM = my_get_quickpic_phasespace(datadir, n_beam_str, n_3D_timestep_str_beam); % auto-extracts beam part filenames exists
 % set units
 qp_version_suffix = my_get_quickpic_format(datadir);
 if( strfind(qp_version_suffix, '.h5') )
@@ -450,9 +567,41 @@ end; % if
 % intital charge and gamma, per beam
 qp(n_3D_counter).PP(n_beam).N0 = qp_N(n_beam);
 qp(n_3D_counter).PP(n_beam).gamma0 = qp_Gamma(n_beam);
+qp(n_3D_counter).E_dec_max =  max(max(qp(n_3D_counter).FEZ(1:round(end*1/2), 1:end))); % peak dec field
+% fraction of accelerated and decelerated charge
+[Y, I] = sort(qp(1).PP(n_beam).BEAM(:,6));
+pp_E = qp(1).PP(n_beam).BEAM(I, 6);
+E0 = qp(n_3D_counter).PP(n_beam).gamma0*.511e-3;
+sigma_E_E0 = 0.04; %  
+E_dec = E0*(1-sigma_E_E0);
+E_acc = E0*(1+sigma_E_E0);
+s_timestep = (SI_c/omega_p) * DT * n_3D_timestep; % propagation length for this timestep
+E_acc_T2 = E0 + 2*qp(n_3D_counter).E_dec_max*s_timestep; % Energy for particles experiencing a T>=2
+n_dec_max = max(find(pp_E<E_dec));
+n_acc_min = min(find(pp_E>E_acc));
+n_acc_T2_min = min(find(pp_E>E_acc_T2));
+if( length(n_acc_min) > 0)
+  n_acc_frac = 1-n_acc_min / length(pp_E);
+else
+  n_acc_frac = 0;
+end% if
+if( length(n_acc_T2_min) > 0)
+  n_acc_T2_frac = 1-n_acc_T2_min / length(pp_E);
+else
+  n_acc_T2_frac = 0;
+end% if
+if( length(n_dec_max) > 0)
+  n_dec_frac = n_dec_max / length(pp_E);
+else
+  n_dec_frac = 0;
+end% if
+qp(n_3D_counter).PP(n_beam).n_acc_frac = n_acc_frac;
+qp(n_3D_counter).PP(n_beam).n_acc_T2_frac = n_acc_T2_frac;
+qp(n_3D_counter).PP(n_beam).n_dec_frac = n_dec_frac;
 
 end% for each beam
 
+% generic values
 qp(n_3D_counter).timestamp = now(); % timestamp data file
 qp(n_3D_counter).n0 = n0;
 qp(n_3D_counter).neutral_gas = neutral_gas; 
@@ -460,6 +609,197 @@ s_timestep = (SI_c/omega_p) * DT * n_3D_timestep; % propagation length for this 
 qp(n_3D_counter).s_timestep = s_timestep;
 disp(' ' ); 
 display(['Prop. length s=' num2str(s_timestep*100, 3) ' [cm]. Time steps in units of DT: ' n_3D_timestep_str]);
+
+%
+% calculating hosing and ctm quantities
+%
+if(do_calc_hose_ctm)
+  do_beam_1_only = 1;
+  if( do_beam_1_only == 1)
+    pp = qp(n_3D_counter_beam).PP(1).BEAM;
+  else
+    pp = qp(n_3D_counter_beam).PP(n_beam).BEAM;
+  end% if
+[Y, I] = sort(pp(:,3));
+pp = pp(I, :);
+%zn_ion = min(find(sum(qp(n_3D_counter).QEP', 1) > 0));
+% Not working for highly sloshing beam
+%[val, xn_ion] = max(max(qp(n_3D_counter).FEZ(1:round(end*2/3), :)));
+%zn_ion = min(find(qp(n_3D_counter).FEZ(1:round(end*2/3), xn_ion) > max(qp(n_3D_counter).FEZ(1:round(end*2/3), xn_ion))*1/2 ));
+% Not working for highly sloshing beam
+dens_peak = max(max(qp(n_3D_counter).QEB));
+zn_ion = min(find(max(qp(n_3D_counter).QEB') >  1/2*dens_peak));
+dz0_offset = 0; % [um], start 
+dz0_length = 10; % [um], start 
+z_ion_head = zn_ion*scale_z-offset_z0 + dz0_offset;
+% if first timestep (no plasma interaction), set inital z_ion_head in
+% determinstic way
+if( n_3D_timestep == 0)
+  sgh0=8.0;
+  z_ion_head = pp( round(size(pp,1)*sgh0/100),3 ) + dz0_offset;
+end% if
+z1_ion_head = zn_ion*scale_z-offset_z0 + (dz0_offset+dz0_length);
+nn0 = max(find( pp(:,3) < z_ion_head));
+nn1 = max(find( pp(:,3) < z1_ion_head));
+z_ion_head;
+x_ion_head =  mean(pp(nn0:nn1,1));
+xp_ion_head =  mean(pp(nn0:nn1,4));
+y_ion_head =  mean(pp(nn0:nn1,2));
+yp_ion_head =  mean(pp(nn0:nn1,5));
+% if first timestep (no plasma interaction), set initalion_head in
+% determinstic way
+if( n_3D_timestep == 0)
+  x_ion_head =  0;
+  y_ion_head =  0;
+  xp_ion_head =  0;
+  yp_ion_head =  0;
+end% if
+
+% fix tail particles to be tracked at first time step
+if( n_3D_counter == 1)
+  % at this percentage of the beam, and keep same n_part throughout?
+  sgh0 = 84.2;
+  sgh1 = 86.3;
+  n_tail_start_0 = round(size(pp,1)*sgh0/100);
+  n_tail_end_0 = round(size(pp,1)*sgh1/100);
+  % since head erodes -> lost particles, better to keep fixed z
+  z_tail_start = pp(n_tail_start_0,3);
+  z_tail_end = pp(n_tail_end_0,3);
+  % or simply, set fixed z directly : at n initial sigmas after mean of beam
+  n_sigma = 1;
+  qp(1).PP(n_beam).hose_calc.n_sigma = n_sigma;
+  z_tail_start = qp(1).PP(1).mean_z + (n_sigma-0.1)*qp(1).PP(1).sigma_z;
+  z_tail_end = qp(1).PP(1).mean_z + (n_sigma+0.1)*qp(1).PP(1).sigma_z;
+end% if
+
+n_tail_start = max(find(pp(:,3) < z_tail_start));
+n_tail_end = max(find(pp(:,3) < z_tail_end));
+%n_tail_start = n_tail_start_0;
+%n_tail_end = n_tail_end_0;
+x_tail =  mean(pp(n_tail_start:n_tail_end,1));
+y_tail =  mean(pp(n_tail_start:n_tail_end,2));
+qp(n_3D_counter).PP(n_beam).x_tail = x_tail;
+qp(n_3D_counter).PP(n_beam).y_tail = y_tail;
+qp(n_3D_counter).PP(n_beam).x_head = mean(pp(1:round(size(pp,1)*1/100),1));
+qp(n_3D_counter).PP(n_beam).y_head = mean(pp(1:round(size(pp,2)*1/100),2));
+qp(n_3D_counter).PP(n_beam).x_ion_head = x_ion_head;
+qp(n_3D_counter).PP(n_beam).y_ion_head = y_ion_head;
+qp(n_3D_counter).PP(n_beam).xp_ion_head = xp_ion_head;
+qp(n_3D_counter).PP(n_beam).yp_ion_head = yp_ion_head;
+qp(n_3D_counter).PP(n_beam).z_ion_head = z_ion_head;
+ 
+nn0h = round(size(pp,1)*sgh0/100);
+nn1h = round(size(pp,1)*sgh1/100);
+do_thisplot = 0;
+if( do_thisplot )
+  plot(pp(:,3), pp(:,1), '.');
+  hold on;
+  plot(pp(nn0:nn1,3), pp(nn0:nn1,1), '.r');
+  plot(pp(nn0h:nn1h,3), pp(nn0h:nn1h,1), '.g');
+  hold off;
+  xlabel('z [um]');
+  ylabel('x [um]');
+  grid on;
+  pause
+end% if
+
+%
+% calc' bubble and focusing field calcs
+%
+  ZZ = (1:size(qp(n_3D_counter).QEB,1)) * scale_z - offset_z0;
+  XX = (1:size(qp(n_3D_counter).QEB,2)) * scale_x - offset_x0;
+  YY = (1:size(qp(n_3D_counter).QEB,2)) * scale_y - offset_y0;
+  if( qp_dump_plane == 'XZ' )
+    RR = XX;
+    EE = qp(n_3D_counter).FEX; % [GV/m]
+    BB = -SI_c*qp(n_3D_counter).FBY/1e9; % [GV/m]
+  elseif( qp_dump_plane == 'YZ' )
+    RR = YY;
+    EE = qp(n_3D_counter).FEY; % [GV/m]
+    BB = +SI_c*qp(n_3D_counter).FBX/1e9; % [GV/m]
+  end% if
+  % calc EB slope either at fixed number, or at erosion front
+  if( strcmp(translopeEB_dz, 'ion_head'))
+    % at erosion front
+    translopeEB_dz_forcalc = (z1_ion_head + z_ion_head)/2;
+    x_beam = x_ion_head;
+  elseif( strcmp(translopeEB_dz, 'hose_tail'))
+    % at hose calc point
+    translopeEB_dz_forcalc = (z_tail_end + z_tail_start)/2;
+    x_beam = x_tail;
+  else
+    % fixed number
+    translopeEB_dz_forcalc = translopeEB_dz;
+    x_beam = 0; 
+  end% if
+  d_INDZ = round(translopeEB_dz_forcalc/scale_z);
+  EE_BB =  EE((2^INDZ/2)+1+d_INDZ, :) + BB((2^INDZ/2)+1+d_INDZ, :);
+  % robust bubble radius: deduce bubble radius from field itself (assume good limits)
+  [VL, IXp] = max(EE_BB);
+  [VL, IXm] = min(EE_BB);
+  R0 = (IXm + my_find_zero_cross(EE_BB(IXm:IXp), 1) - 1) * scale_x;
+  Rp = IXp*scale_x;
+  Rm = IXm*scale_x;
+  R_bubble_calc = (Rp-Rm)/2;
+  f_linear = 0.50;
+  if( isstr( translopeEB_dz ))
+    % at erosion front
+    translopeEB_Rp = +f_linear*abs(R_bubble_calc) + x_beam;
+    translopeEB_Rm = -f_linear*abs(R_bubble_calc) + x_beam;
+  else
+    % fixed number
+    translopeEB_Rp = +f_linear*abs(R_bubble_calc); % assume linear with 60% from max
+    translopeEB_Rm = -f_linear*abs(R_bubble_calc); % assume linear with 60% from max
+  end% if
+  x0 = (length(EE( (2^INDZ/2)+1+d_INDZ))/2 + 1) * scale_x + x_beam;
+  xp = (length(EE( (2^INDZ/2)+1+d_INDZ))/2 + 1) * scale_x + translopeEB_Rp;
+  xm = (length(EE( (2^INDZ/2)+1+d_INDZ))/2 + 1) * scale_x + translopeEB_Rm;
+  E_R0 = EE( (2^INDZ/2)+1+d_INDZ, end/2+1);
+  E_Rp = EE( (2^INDZ/2)+1+d_INDZ, end/2+1 + round(translopeEB_Rp/scale_x) );
+  E_Rm = EE( (2^INDZ/2)+1+d_INDZ, end/2+1 + round(translopeEB_Rm/scale_x) );
+  B_R0 = BB( (2^INDZ/2)+1+d_INDZ, end/2+1);
+  B_Rp = BB( (2^INDZ/2)+1+d_INDZ, end/2+1 + round(translopeEB_Rp/scale_x) );
+  B_Rm = BB( (2^INDZ/2)+1+d_INDZ, end/2+1 + round(translopeEB_Rm/scale_x) );
+  P = polyfit( [xm x0 xp], [E_Rm+B_Rm E_R0+B_R0 E_Rp+B_Rp], 1);
+  % if we look at field at beam motion, let's mark where the beam <x> is
+  %    by putting the center of the fit line here.
+  if( isstr( translopeEB_dz ))
+    dx = x_beam - x0;
+    dy = 0 - (P(2) + P(1)*x0);
+  else
+    dx = 0;
+    dy = 0;
+  end% if
+  % for which x is the field zero?
+  [dummy, indx_min] = min(abs(EE_BB((end/2+1 + round(translopeEB_Rm/scale_x)) : (end/2+1 + round(translopeEB_Rp/scale_x)))));
+  indx_min = indx_min + length(EE_BB)/2 + round(translopeEB_Rm/scale_x);
+  x_zero_EcB = RR(indx_min);
+  % we are not fully at zero due to granularit of grid, so store
+  EcB_zero =  EE_BB(indx_min);
+  qp(n_3D_counter).PP(n_beam).x_zero_EcB = x_zero_EcB;
+  qp(n_3D_counter).PP(n_beam).EcB_zero = EcB_zero;
+  % what is the field at the beam x?
+  if( strcmp(translopeEB_dz, 'ion_head'))
+    % at erosion front
+    dx_zeros_beam_field = x_beam - x_zero_EcB;
+  elseif( strcmp(translopeEB_dz, 'hose_tail'))
+    % at erosion front
+    dx_zeros_beam_field = x_tail - x_zero_EcB;
+  else
+    % fixed number
+    dx_zeros_beam_field = 0;
+  end% if
+  EcB_at_beam = EE_BB(round(indx_min + dx_zeros_beam_field/scale_x));
+  qp(n_3D_counter).PP(n_beam).EcB_at_beam = EcB_at_beam;
+  qp(n_3D_counter).PP(n_beam).x_beam_EcB = x_beam;
+  % what is the field at the hosing calc point? [run again to see]
+  
+  % theoretical value, to compare (from Esaray, I. Blumenfeld)
+  F_over_e_m_theory = (1/2)*(SI_em)*SI_c^2*k_p^2 / SI_e / SI_c; % F/e/L in [T/m] (mult by SI_c/1e9 for [T/m])
+  dB_dx = P(1)/SI_c * 1e15; % [T/M]
+
+
+end% if
 
 end% if phase space
 
@@ -485,7 +825,7 @@ end% if phase space
 if( do_beam_phase_space )
 I_peak = qp_N(1)*SI_e *SI_c/sqrt(2*pi*(qp(n_3D_counter).PP(n_beam).sigma_z/1e6)^2);
 n_dens_bunch = qp_N(1) / ( (2*pi)^(3/2)*qp(n_3D_counter).PP(n_beam).sigma_x/1e6*qp(n_3D_counter).PP(n_beam).sigma_y/1e6*qp(n_3D_counter).PP(n_beam).sigma_z/1e6 ) / 1e6; % cm^-3
-f_betatron = sqrt(2*qp_Gamma(1))*(2*pi) / k_p;
+lambda_betatron = sqrt(2*qp_Gamma(1))*(2*pi) / k_p;
 Lambda_nonlin = 2.5*(qp_N(1)/2e10)*(20/qp(n_3D_counter).PP(n_beam).sigma_x);
 crit_blow_out = n_dens_bunch / (n0 * (1+4/(k_p*qp(n_3D_counter).PP(n_beam).sigma_z/1e6)^2) );
 V_erosion_PI = sqrt( qp(n_3D_counter).PP(n_beam).emitt(1)*k_p/(qp(n_3D_counter).PP(n_beam).mean_E/.511e-3)^(3/2)/(I_peak/17e3) );
@@ -494,6 +834,9 @@ Ez_lin_IB = 4*pi*E0_wb * I_peak / 17e3;
 Ez_lin = -100*(qp_N(1)/2e10)*(20/qp(n_3D_counter).PP(n_beam).sigma_z)^2*log(sqrt(2.5e17*1e6 / n0/1e6 * 10 / qp(n_3D_counter).PP(n_beam).sigma_x)); % lin. regime (NJP), GV/m
 Ez_sel = 40*(qp_N(1)/2e10)*(15/qp(n_3D_counter).PP(n_beam).sigma_x)*(20/qp(n_3D_counter).PP(n_beam).sigma_z)^2;
 Ez_hog = 0.244*(qp_N(1)/2e10)*(600/qp(n_3D_counter).PP(n_beam).sigma_z)^2;
+% hose formulae
+omega_p = k_p / sqrt(2);
+k_beta = k_p / sqrt(2*qp_Gamma(1));
 end% if
 
 
@@ -520,9 +863,8 @@ if(do_QEB)
 %qp(n_3D_counter).QEB = flipud(qp(n_3D_counter).QEB);
 %qp(n_3D_counter).QEP = flipud(qp(n_3D_counter).QEP);
   
-  
   colormap(mycolormap);
-  ZZ = (1:size(qp(n_3D_counter).QEB,1)) * scale_z - offset_z0 + 24*0;
+  ZZ = (1:size(qp(n_3D_counter).QEB,1)) * scale_z - offset_z0;
   XX = (1:size(qp(n_3D_counter).QEB,2)) * scale_x - offset_x0;
   YY = (1:size(qp(n_3D_counter).QEB,2)) * scale_y - offset_y0;
   c_min_new = (min( min(min(qp(n_3D_counter).QEB)), min(min(qp(n_3D_counter).QEB)) ));
@@ -535,9 +877,14 @@ if(do_QEB)
     c_max = c_max_new;
   end% if
 
+  map_max = size(eval(mycolormap),1);
+%  mycolormap2 = [gray(map_max); jet(map_max)];
+%  colormap(mycolormap2);
 %  pcolor(ZZ,XX,qp(n_3D_counter).QEB');
-  pcolor(ZZ,XX,qp(n_3D_counter).QEB'+qp(n_3D_counter).QEP');  % with plasma
-%  pcolor(ZZ,XX,qp(n_3D_counter).QEB');  % with plasma
+  pcolor(ZZ,XX,((qp(n_3D_counter).QEB'*((map_max-1)/max(max(qp(n_3D_counter).QEB))) + qp(n_3D_counter).QEP'*((map_max/16-1)/mean(mean(qp(n_3D_counter).QEP))))));  % with plasma
+  caxis([0 (map_max)]);
+%  pcolor(ZZ,XX,qp(n_3D_counter).QEP');  % ONLY plasma
+%  pcolor(ZZ,XX,qp(n_3D_counter).QEB');  % only beam
   h_c = colorbar('NorthOutside');
   %caxis([0.0 0.1]);
   if(do_fixed_axes)
@@ -547,7 +894,7 @@ if(do_QEB)
     caxis([0 5]); % Dx-0 mat
     caxis([-1.0 1.1]); % positrons
   end% if
-    caxis([0 10]);
+%    caxis([0 10]);
 %    caxis([0 4]); % positrons
 
   % IPAC'12
@@ -873,56 +1220,27 @@ end% if plot
 
 
 %
-%  plot and estimate trans slope *** EA
+%  plot and estimate trans slope 
 %
 if(do_translopeEB)
   % add line plot on axis
   subplot(2,3,3);
-  if( qp_dump_plane == 'XZ' )
-    RR = XX;
-    EE = qp(n_3D_counter).FEX; % [GV/m]
-    BB = -SI_c*qp(n_3D_counter).FBY/1e9; % [GV/m]
-  elseif( qp_dump_plane == 'YZ' )
-    RR = YY;
-    EE = qp(n_3D_counter).FEY; % [GV/m]
-    BB = +SI_c*qp(n_3D_counter).FBX/1e9; % [GV/m]
-  end% if
-  d_INDZ = round(translopeEB_dz/scale_z)
-  EE_BB =  EE((2^INDZ/2)+1+d_INDZ, :) + BB((2^INDZ/2)+1+d_INDZ, :);
-  % robust bubble radius: deduce bubble radius from field itself (assume good limits)
-  [VL, IXp] = max(EE_BB);
-  [VL, IXm] = min(EE_BB);
-  R0 = (IXm + my_find_zero_cross(EE_BB(IXm:IXp), 1) - 1) * scale_x;
-  Rp = IXp*scale_x;
-  Rm = IXm*scale_x;
-  R_bubble_calc = (Rp-Rm)/2
-  translopeEB_R = 0.60*abs(R_bubble_calc); % assume linear with 75% from max
   plot(RR, EE_BB, '-r');
-  myaxis = axis;
-  axis([-2*translopeEB_R 2*translopeEB_R myaxis(3) myaxis(4)]);
-  grid on;
-  xlabel([plane_ylabel ' @ z=' num2str(translopeEB_dz, 2) ' um'])
-  ylabel('E - cB [GV/m]')
   hold on;
-%  E1 = 
-  x0 = (length(EE( (2^INDZ/2)+1+d_INDZ))/2 + 1) * scale_x;
-  xp = (length(EE( (2^INDZ/2)+1+d_INDZ))/2 + 1) * scale_x + translopeEB_R;
-  xm = (length(EE( (2^INDZ/2)+1+d_INDZ))/2 + 1) * scale_x - translopeEB_R;
-  E_R0 = EE( (2^INDZ/2)+1+d_INDZ, end/2+1);
-  E_Rp = EE( (2^INDZ/2)+1+d_INDZ, end/2+1 + round(translopeEB_R/scale_x) );
-  E_Rm = EE( (2^INDZ/2)+1+d_INDZ, end/2+1 - round(translopeEB_R/scale_x) );
-  B_R0 = BB( (2^INDZ/2)+1+d_INDZ, end/2+1);
-  B_Rp = BB( (2^INDZ/2)+1+d_INDZ, end/2+1 + round(translopeEB_R/scale_x) );
-  B_Rm = BB( (2^INDZ/2)+1+d_INDZ, end/2+1 - round(translopeEB_R/scale_x) );
-  P = polyfit( [xm x0 xp], [E_Rm+B_Rm E_R0+B_R0 E_Rp+B_Rp], 1);
-  hh = plot([xm x0 xp], (P(2) + P(1)*[xm x0 xp]), '-xk')';
+  set(hh,'MarkerSize', 30)
+  myaxis = axis;
+    axis([x_beam-2*f_linear*abs(R_bubble_calc) x_beam+2*f_linear*abs(R_bubble_calc) myaxis(3) myaxis(4)]);
+    grid on;
+  xlabel([plane_ylabel ' @ z=' num2str(translopeEB_dz_forcalc, 2) ' um'])
+  ylabel('E - cB [GV/m]')
+  hh = plot([xm x0 xp]+dx, (P(2) + P(1)*([xm x0 xp]))+dy, '-xk')';
   set(hh,'LineWidth',3)
-  hold off;
-  dB_dx = P(1)/SI_c * 1e15; % 
-%  title(['d(E-cB)/dr = ' num2str(P(1), '%.1f') ' EV/m^2 ']);
-  title(['d(E/c-B)/dr = ' num2str(dB_dx/1e6, '%.3g') ' MT/m ']);
-  % theoretical value, to compare (from Esaray, I. Blumenfeld)
-  F_over_e_m_theory = (1/2)*(SI_em)*SI_c^2*k_p^2 / SI_e / SI_c % F/e/L in [T/m] (mult by SI_c/1e9 for [T/m])
+  % plot beam zero
+  hh = plot(x0+dx, (P(2) + P(1)*([x0]))+dy, '+k')';
+  set(hh,'MarkerSize', 30)
+  % plot field zero
+  hh = plot(RR(indx_min), EE_BB(indx_min), '+r');
+  set(hh,'MarkerSize', 30);
 end% if
 
 
@@ -1021,7 +1339,7 @@ I = I - n_cut - 1 + Nx/2; % adjust for new zero
 %shading('flat');
 
 % plot together with beam axis
-plot(slice.z(n_beam, 1:end-1), slice.mean_x, '-ob')
+plot(slice.z(n_beam, 1:end-1), slice.mean_x, '-ob');
 hold on;
 ZZ = (1:length(I)) * scale_z - offset_z0;
 plot(ZZ, I * scale_x-offset_x0, '-xr');
@@ -1087,7 +1405,7 @@ if(do_fixed_axes)
 end% if
 E_min = min(qp_BEAMS(:,hist_var2));
 E_max = max(qp_BEAMS(:,hist_var2));
-E_min
+E_min;
 if(do_fixed_axes)
   E_min = 0;
   E_max = 60;
@@ -1123,7 +1441,7 @@ if(do_fixed_axes)
 end% if
   caxis([0 5]);
 shading('flat');
-axis([x_min x_max E_min E_max]); % for comp with AAC 2010 figure
+axis([x_min x_max E_min E_max+1e-10]); % for comp with AAC 2010 figure
 %axis square tight;
 xlabel(pplabel(hist_var1).var);
 ylabel(pplabel(hist_var2).var);
@@ -1183,6 +1501,9 @@ if(do_Eprof)
   if( max(E) > ax_E_max )
     ax_E_max = max(E);
   end; % if
+  n_acc_frac = n_acc_frac
+  n_acc_T2_frac = n_acc_T2_frac
+  n_dec_frac = n_dec_frac
     
   if(do_Eprof_allview)
     subplot(1,1,1);

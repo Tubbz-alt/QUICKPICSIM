@@ -797,7 +797,7 @@ end% if
 %
 % FACET-II  (Jan 2013)
 %
-if(1)
+if(0)
 % two-beam test
 plasma_s_prop = 2.2; % [m]  - plasma propagation length
 plasma_density = 1e15; % /cm^3
@@ -822,4 +822,159 @@ beam_z_pos = [4*(1/k_p)*1e6  (4+4)*(1/k_p)*1e6];
 tilt_x = [0  0; 0  0; 0  0];
 tilt_y = [0  0; 0  0; 0  0];
 my_gen_rpinput(rpinput_template_file, rpinput_output_file, plasma_density, plasma_Z, plasma_PREION, plasma_s_prop, charge, mean_E, sigma_E_E, sigma_x, sigma_y, sigma_z, emitt_x, emitt_y, BEAM_EV, beam_match, emitt_match, beam_z_pos, tilt_x, tilt_y);
+end% if
+
+
+
+
+
+
+%
+% CTM studies (jan 2013)
+%
+
+%
+if(1)
+%
+ex = 600.0e-6; % n/a
+ey = 200.0e-6; % n/a
+E0 = 20;
+n0 = 1.0e17;
+%
+plasma_s_prop = 0.55; % [m]  - propagation length if the beam into the plasma
+plasma_density = n0; % /cm^3
+plasma_PREION=1; % 0 : non-ionized plasma 1: pre-ionized plasma
+plasma_Z = 37; % atomic number of plasma gas
+BEAM_EV=1; % 0 : calc wake only (single time-step):
+           % assume: use 8 cores (express) when set to 0, 
+           % and 128 cores when set to 1
+beam_match = 0; % 1: override sigma_x, sigma_y with matched counterparts, 0: do nothing
+emitt_match =1; % 1: override emitt_x, emitt_y with matched counterparts, 0: do nothing
+mean_E = E0*1e9; % beam mean energy [eV]
+sigma_E_E = 0; % 
+omega_p = sqrt(plasma_density*1e6* SI_e^2 /SI_em / SI_eps0);  % plasma frequency
+lambda_p = SI_c / omega_p * 2*pi; % plasma wavelength
+k_p = 2*pi/lambda_p
+%lens_demag = 0.1278;
+%lens_demag = 1;
+%sigma_x = sz_mat / sqrt(lens_demag); % use this for ramped (put in beta and alpha)                                    
+%sigma_x = 3.5355e-6; 
+sigma_x = 5e-6 * sqrt(2); 
+%sigma_x = 5e-6 / sqrt(16384); 
+%sigma_x = 5e-6 / sqrt(262144); 
+sigma_y = sigma_x;
+sigma_z = 30e-6;
+% this following will enforce (close to) ideal density
+%k_p = sqrt(2) / sigma_z;
+%n0 = (k_p*SI_c)^2 * SI_em *SI_eps0 / SI_e^2  / 1e6;
+%plasma_density = n0;
+% 
+emitt_x = ex;
+emitt_y = ey
+charge = 2e10*SI_e; % beam electron charge [C]
+tilt_angle = 0.05;
+tilt_x = [0 tilt_angle 0]';
+tilt_y = [0 0 0]';
+
+my_gen_rpinput(rpinput_template_file, rpinput_output_file, plasma_density, plasma_Z, plasma_PREION, plasma_s_prop, charge, mean_E, sigma_E_E, sigma_x, sigma_y, sigma_z, emitt_x, emitt_y, BEAM_EV, beam_match, emitt_match, -1, tilt_x, tilt_y);
+end% if
+
+
+
+
+
+
+
+
+
+
+
+%
+% Ken/UCLA short bunch "proposal"
+%
+if(1)
+%
+ex = 100e-6;
+ey = 10e-6;
+E0 = 20;
+n0 = 4e17;
+%
+plasma_s_prop = 0.5; % [m]  - propagation length if the beam into the plasma
+plasma_density = n0; % /cm^3
+plasma_PREION=1; % 0 : non-ionized plasma 1: pre-ionized plasma
+plasma_Z = 37; % atomic number of plasma gas
+BEAM_EV=1; % 0 : calc wake only (single time-step):
+           % assume: use 8 cores (express) when set to 0, 
+           % and 128 cores when set to 1
+beam_match = 0; % 1: override sigma_x, sigma_y with matched counterparts, 0: do nothing
+emitt_match =0; % 1: override emitt_x, emitt_y with matched counterparts, 0: do nothing
+mean_E = E0*1e9; % beam mean energy [eV]
+sigma_E_E = 0; % 
+omega_p = sqrt(plasma_density*1e6* SI_e^2 /SI_em / SI_eps0);  % plasma frequency
+lambda_p = SI_c / omega_p * 2*pi; % plasma wavelength
+k_p = 2*pi/lambda_p
+%lens_demag = 0.1278;
+%lens_demag = 1;
+%sigma_x = sz_mat / sqrt(lens_demag); % use this for ramped (put in
+                                     % beta and alpha                                    
+sigma_x = 30e-6; % use this for directly into flat top
+sigma_y = sigma_x;
+sigma_z = 30e-6;
+% 
+emitt_x = ex;
+emitt_y = ey
+charge = 2e10*SI_e; % beam electron charge [C]
+tilt_angle = 0.00;
+tilt_x = [0 tilt_angle 0]';
+tilt_y = [0 0 0]';
+
+my_gen_rpinput(rpinput_template_file, rpinput_output_file, plasma_density, plasma_Z, plasma_PREION, plasma_s_prop, charge, mean_E, sigma_E_E, sigma_x, sigma_y, sigma_z, emitt_x, emitt_y, BEAM_EV, beam_match, emitt_match, -1, tilt_x, tilt_y);
+end% if
+
+
+
+
+
+
+
+%
+% My QP run
+%
+if(1)
+%
+ex = 71.6e-6;
+ey = 7.16e-6;
+E0 = 20.35;
+n0 = 2.66e17;
+%
+plasma_s_prop = 0.28; % [m]  - propagation length if the beam into the plasma
+plasma_density = n0; % /cm^3
+plasma_PREION=0; % 0 : non-ionized plasma 1: pre-ionized plasma
+plasma_Z = 37; % atomic number of plasma gas
+BEAM_EV=1; % 0 : calc wake only (single time-step):
+           % assume: use 8 cores (express) when set to 0, 
+           % and 128 cores when set to 1
+beam_match = 0; % 1: override sigma_x, sigma_y with matched counterparts, 0: do nothing
+emitt_match =0; % 1: override emitt_x, emitt_y with matched counterparts, 0: do nothing
+mean_E = E0*1e9; % beam mean energy [eV]
+sigma_E_E = 0; % 
+omega_p = sqrt(plasma_density*1e6* SI_e^2 /SI_em / SI_eps0);  % plasma frequency
+lambda_p = SI_c / omega_p * 2*pi; % plasma wavelength
+k_p = 2*pi/lambda_p
+%lens_demag = 0.1278;
+%lens_demag = 1;
+%sigma_x = sz_mat / sqrt(lens_demag); % use this for ramped (put in
+                                     % beta and alpha                                    
+sigma_x = 30e-6; % use this for directly into flat top
+sigma_y = sigma_x;
+sigma_z = 60e-6;
+% 
+emitt_x = ex;
+emitt_y = ey
+charge = 2e10*SI_e; % beam electron charge [C]
+tilt_angle = 0.5;
+tilt_x = [0 tilt_angle 0]';
+tilt_y = [0 0 0]';
+
+my_gen_rpinput(rpinput_template_file, rpinput_output_file, plasma_density, plasma_Z, plasma_PREION, plasma_s_prop, charge, mean_E, sigma_E_E, sigma_x, sigma_y, sigma_z, emitt_x, emitt_y, BEAM_EV, beam_match, emitt_match, -1, tilt_x, tilt_y);
 end% if

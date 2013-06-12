@@ -87,15 +87,15 @@ Box_Z = Box_Z + 1;
 %
 % TEMP BOX REDUCE
 %
-%Box_X = Box_X * 0.6;
-%Box_Y = Box_Y * 0.6;
-%Box_Z = Box_Z * 0.6;
+%Box_X = round(Box_X * 1.2);
+%Box_Y = round(Box_Y * 1.2);
+Box_Z = round(Box_Z * 0.85);
 skin_frac = 1/20; % grid size in fractions of skin-depth
 INDX = floor( log(Box_X*1e-6 * k_p / skin_frac) / log(2) )
 INDY = floor( log(Box_Y*1e-6 * k_p / skin_frac) / log(2) )
 INDZ = floor( log(Box_Z*1e-6 * k_p / skin_frac) / log(2) )
-%INDX = 9 % temp
-%INDY = 9 % temp
+%INDX = 10 % temp
+%INDY = 10 % temp
 %Box_Z = Box_Z - 50 % temp
 % force min 2^6 per dim
 if( INDX < 6 )
@@ -134,8 +134,8 @@ comp_tilt_y = - round(Box_Z/2 * tilt_y(2, :));
 DT =round(sqrt(2*min(gamma))/10 / 1.5) % 1.5 is deceleration factor
 if( BEAM_EV )
   TEND = floor(plasma_s_prop / (SI_c / omega_p))+0.1;
-  DT_OUTPUT = 10; % output data every n'th timestep
-  DT_RESTART = DT_OUTPUT*4;
+  DT_OUTPUT = 20; % output data every n'th timestep
+  DT_RESTART = DT_OUTPUT*5;
 else
   TEND = DT+0.1;
   DT_OUTPUT = 1; % output data every timestep
@@ -333,14 +333,14 @@ fprintf(fidout, [' BEAM_PROFILE = ''test.hdf''' '\n']  );
 fprintf(fidout, [' QUIET_START = .true.' '\n']  );
 fprintf(fidout, [' Parameter_Array(1:1,1:3) = ' sprintf('%.3f', Box_X/2 + 0*comp_tilt_x(n_beam)) ',' sprintf('%.3f', Box_Y/2 + comp_tilt_y(n_beam))  ',' num2str(beam_z_pos(n_beam), '%.2f') '\n']);
 if( beam_z_is_custom )
-  fprintf(fidout, [' Parameter_Array(2:2,1:3) = ' num2str(qp_sigma_x(n_beam), '%.2f') ',' num2str(qp_sigma_y(n_beam), '%.2f')  ',' num2str(length(histZcount), '%.0d') '\n']);
+  fprintf(fidout, [' Parameter_Array(2:2,1:3) = ' num2str(qp_sigma_x(n_beam), '%.3f') ',' num2str(qp_sigma_y(n_beam), '%.3f')  ',' num2str(length(histZcount), '%.0d') '\n']);
 else
-  fprintf(fidout, [' Parameter_Array(2:2,1:3) = ' num2str(qp_sigma_x(n_beam), '%.2f') ',' num2str(qp_sigma_y(n_beam), '%.2f')  ',' num2str(qp_sigma_z(n_beam), '%.2f') '\n']);
+  fprintf(fidout, [' Parameter_Array(2:2,1:3) = ' num2str(qp_sigma_x(n_beam), '%.3f') ',' num2str(qp_sigma_y(n_beam), '%.3f')  ',' num2str(qp_sigma_z(n_beam), '%.3f') '\n']);
 end% if
 if( beam_z_is_custom)
-  fprintf(fidout, [' Parameter_Array(3:3,1:9) = ' num2str(qp_emitt_x(n_beam), '%.3f') ',' num2str(qp_emitt_y(n_beam), '%.3f') ',' num2str(qp_e_spread(n_beam), '%.3f') ',' num2str(tilt_x(3, n_beam), '%.3f') ',' num2str(-tilt_x(2, n_beam), '%.3f') ',' num2str(tilt_x(1, n_beam), '%.3f') ',' num2str(tilt_y(3, n_beam), '%.3f') ',' num2str(-tilt_y(2, n_beam), '%.3f') ',' num2str(tilt_y(1, n_beam), '%.3f')  '\n'] );
+  fprintf(fidout, [' Parameter_Array(3:3,1:9) = ' num2str(qp_emitt_x(n_beam), '%.4f') ',' num2str(qp_emitt_y(n_beam), '%.4f') ',' num2str(qp_e_spread(n_beam), '%.4f') ',' num2str(tilt_x(3, n_beam), '%.3f') ',' num2str(-tilt_x(2, n_beam), '%.3f') ',' num2str(tilt_x(1, n_beam), '%.3f') ',' num2str(tilt_y(3, n_beam), '%.3f') ',' num2str(-tilt_y(2, n_beam), '%.3f') ',' num2str(tilt_y(1, n_beam), '%.3f')  '\n'] );
 else
-  fprintf(fidout, [' Parameter_Array(3:3,1:3) = ' num2str(qp_emitt_x(n_beam), '%.3f') ',' num2str(qp_emitt_y(n_beam), '%.3f') ',' num2str(qp_e_spread(n_beam), '%.3f')  '\n'] );
+  fprintf(fidout, [' Parameter_Array(3:3,1:3) = ' num2str(qp_emitt_x(n_beam), '%.4f') ',' num2str(qp_emitt_y(n_beam), '%.4f') ',' num2str(qp_e_spread(n_beam), '%.4f')  '\n'] );
 end% if
 if( beam_z_is_custom)
   histZcount_str = [];
@@ -411,9 +411,9 @@ section_beam = 0;
 
       % DIAG SECTION
     elseif( ~isempty(strfind(row, 'DFESLICE') ) && section_fielddiag == 1) 
-      fprintf(fidout, [' DFESLICE=' num2str(DT_OUTPUT) ', EX0=0, EY0=' num2str(round(Box_Y/2), '%.0f') ', EZ0=0' '\n']  );
+      fprintf(fidout, [' DFESLICE=' num2str(DT_OUTPUT) ', EX0=0, EY0=' num2str((Box_Y/2), '%.2f') ', EZ0=0' '\n']  );
     elseif( ~isempty(strfind(row, 'DFBSLICE') ) && section_fielddiag == 1) 
-      fprintf(fidout, [' DFBSLICE=' num2str(DT_OUTPUT) ', BX0=0, BY0=' num2str(round(Box_Y/2), '%.0f') ', BZ0=0' '\n']  );
+      fprintf(fidout, [' DFBSLICE=' num2str(DT_OUTPUT) ', BX0=0, BY0=' num2str((Box_Y/2), '%.2f') ', BZ0=0' '\n']  );
    elseif( ~isempty(strfind(row, 'DFQEB')) && isempty(strfind(row, 'DFQEBSLICE'))  && section_beamdiag == 1)
      if(store_QEB_3D)
        fprintf(fidout, [' DFQEB=' num2str(DT_OUTPUT) ',' '\n']  );
@@ -421,9 +421,9 @@ section_beam = 0;
        fprintf(fidout, [' DFQEB=0,' '\n']  );
      end% if
     elseif( ~isempty(strfind(row, 'DFQEBSLICE'))  && section_beamdiag == 1)
-      fprintf(fidout, [' DFQEBSLICE=' num2str(DT_OUTPUT) ' , QEBX0=0., QEBY0=' num2str(round(Box_Y/2), '%.0f') ',  QEBZ0=0' '\n']  );
+      fprintf(fidout, [' DFQEBSLICE=' num2str(DT_OUTPUT) ' , QEBX0=0., QEBY0=' num2str((Box_Y/2), '%.2f') ',  QEBZ0=0' '\n']  );
     elseif( ~isempty(strfind(row, 'DFQEPSLICE'))  && section_plasmadiag == 1)
-      fprintf(fidout, [' DFQEPSLICE=' num2str(DT_OUTPUT) ' , QEPX0= 0, QEPY0=' num2str(round(Box_Y/2), '%.0f') ',  QEPZ0=0' '\n']  );
+      fprintf(fidout, [' DFQEPSLICE=' num2str(DT_OUTPUT) ' , QEPX0= 0, QEPY0=' num2str((Box_Y/2), '%.2f') ',  QEPZ0=0' '\n']  );
     elseif( ~isempty(strfind(row, 'DUMP_PHA_BEAM'))  && section_beamphasediag == 1)
       fprintf(fidout, [' DUMP_PHA_BEAM=.true., DFPHA_BEAM=' num2str(DT_OUTPUT) ',' '\n']  );
     elseif( ~isempty(strfind(row, 'DSAMPLE_BEAM'))  && section_beamphasediag == 1)

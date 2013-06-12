@@ -14,4 +14,5 @@ gam0 = mean(pp(:,6));
 pp_2write = pp;
 pp_2write(:,5) = pp(:,5) * SI_c;
 pp_2write(:,6) = pp(:,6) / gam0 -1;
+pp_2write(:,7) = 1:size(pp,1);  
 write_elegant_file(pp_2write, gam0, filename, 'e', 6);

@@ -16,8 +16,8 @@ if(size(pp,2) == 6)
   pp = [pp ones(size(pp, 1), 1)];
 end% if
 
-if(length(plot_vector) < 7)
-  plot_vector(7) = 0;
+if(length(plot_vector) < 9)
+  plot_vector(9) = 0;
 end% if
 
 if(sum(plot_vector) > 0)
@@ -147,6 +147,28 @@ if(plot_vector(6) == 1)
   my_densplot(pp, 3, 2, 0, n_sigma);
 end% if
 
+
+
+%
+% special for spectrometer measurements
+%
+if(plot_vector(8) == 1)
+  n_plot = n_plot + 1;
+  subplot(2,N_plot_cols, n_plot);
+  % special case: CHER SPETRO ANA MAP Y to E
+  load ~/Dropbox/temp/yE_nom.mat;
+  pp(:,8) = my_2d_mapping(E_nom, y_nom, pp(:,2)); % E meas
+%  pp(:,8)
+  pp(:,9) = (pp(:,8) - pp(:,6)) ./ pp(:,6) * 100; % rel E error
+  % n_perc
+  n_perc = 10; % [%]
+  p_err_ab_nperc = sum(pp(:,9) > n_perc) / length(pp(:,9)) * 100 
+  my_densplot(pp, 6, 9, 0, n_sigma);
+  subplot(2,N_plot_cols, n_plot+N_plot_cols);
+  my_densplot(pp, 1, 8, 0, n_sigma); 
+end% if
+
+
 if(sum(plot_vector) > 0)
 subplot(2,N_plot_cols,2);
   title([ '\mu_E [GeV] =' num2str(muE, '%.2f') ','...
@@ -182,7 +204,7 @@ pp = pp(I, :);
 [slice.mean_y, slice.sigma_y, slice.z, slice.N_z] = my_get_slice_var(pp, 3, 2);
 [slice.mean_E, slice.sigma_E, slice.z, slice.N_z] = my_get_slice_var(pp, 3, 6);
 [slice.emnx,slice.emny,slice.betax,slice.alphax,slice.betay,slice.alphay] = my_get_slice_twiss(pp, slice.z);
-
+0
 if(plot_vector(7))  
   my_ana_beam_slice( slice );
 end% if

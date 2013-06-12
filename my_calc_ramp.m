@@ -1,4 +1,9 @@
-function [b_mat, a_mat, b_0, a_0, b_min, a_min, b_max, a_max, b_beat_rel, z, beta_evol] =my_calc_ramp(n0, gamma, d_beta_beta0, do_plot, z_ramp)
+function [b_mat, a_mat, b_0, a_0, R_tot, b_min, a_min, b_max, a_max, b_beat_rel, z, beta_evol] =my_calc_ramp(n0, gamma, d_beta_beta0, do_plot, z_ramp, roll_up)
+
+if( nargin < 6)
+  roll_up = 1; % 0: roll_down
+end% if
+
 
 
 %
@@ -18,12 +23,11 @@ k_p_inv = 1/ k_p; % skin-depth and UCLA length scale
 beta_1 = sqrt(2*gamma) / k_p;
 
 %%% plasma ramp parameters
-roll_up = 1; % 0: roll_down
-
 % speed of plasma rollup
 w      = 5 / z_ramp; % [m^-1]
 %w      = 33;
 nsteps = 2048;
+%nsteps = 65536;
 %nsteps = 64;
 %nsteps = 128;
 %nsteps = 47; % for quickpic two ramp
@@ -57,7 +61,7 @@ flat_top_s = 0.30; % [m]
 if(do_write_np)
   filename = '/tmp/lens_np.txt';
   fid = fopen(filename, 'w');
-  Nsec = nsteps+3;
+  Nsec = nsteps+3; %   Nsec = nsteps+2 ?
   if(flat_top_s > 0.0)
     Nsec = Nsec + 1;
   end% if
@@ -289,7 +293,6 @@ B1_test = R_tot*B0*R_tot';
 % beta evolution all the way (to find minimum)
 %
 B0_evol(:,:,1) = B0;
-R_tot = eye(2,2);
 for n=1:size(qmat,1),
   r11 = qmat(n, 3);
   r12 = qmat(n, 5);
@@ -308,7 +311,7 @@ b_min = min(B0_evol(1,1,:));
 a_min = min((B0_evol(1,2,:)));
 b_max = max(B0_evol(1,1,:));
 a_max = max((B0_evol(1,2,:)));
-if( roll_up )
+if( ~roll_up )
   a_0 = -a_0;
 end% if
 
@@ -364,9 +367,35 @@ np = [np max(np)*ones(1, length(np))];
 
 
 if(do_plot)
+  
+  
+  
+
 beta_evol = squeeze(B0_evol(1,1,:));
+alpha_evol = -squeeze(B0_evol(1,2,:));
+
+
+
   set(0,'defaultaxesfontsize',24);
 [AX,H1,H2] = plotyy(z, np/1e6, z, beta_evol(1:end-1));
+%[AX,H1,H2] = plotyy(z, np/1e6, z, alpha_evol(1:end-1));
+%plot(beta_evol(1:end-1) .* K_focus);
+do_det_plot = 0;
+if( do_det_plot)
+plot(z(1:length(K_focus)), beta_evol(1:length(K_focus)) .* K_focus');
+hold on;
+plot(z(1:length(K_focus)),alpha_evol(1:length(K_focus)), 'r');
+plot(z(1:length(K_focus)),np(1:length(K_focus))/max(np), 'k');
+hold off;
+legend('\beta \times k_{\beta}', '\alpha', 'n_p');%alpha_evol(1:end-1)
+my_ds = 0.0248
+my_z = z( max(find(z < my_ds) ) );
+my_alpha = alpha_evol( max(find(z < my_ds) ) )
+beta_kbeta =  beta_evol(1:length(K_focus)) .* K_focus';
+my_beta_Kbeta = beta_kbeta( max(find(z < my_ds) ) )
+my_np = np( max(find(z < my_ds) ) ) / max(np)
+end% if
+
 
 % temp for Yuri
 %NN= 66;
@@ -382,3 +411,12 @@ set(get(AX(2),'Ylabel'),'String','\beta [m]');
 set(get(AX(1),'Ylabel'),'FontSize',20);
 set(get(AX(2),'Ylabel'),'FontSize',20);
 end% if
+
+
+%
+% invert return total matrix if down ramp
+%
+if( ~roll_up)
+  R_tot = inv(R_tot)
+end% if
+
