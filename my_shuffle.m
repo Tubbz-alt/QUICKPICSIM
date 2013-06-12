@@ -4,6 +4,7 @@ function x = my_shuffle(x)
 
 %   Since this function changes the vector x,
 %   it creates a copy of it.
+%
 
 n = length(x);
 %disp n
