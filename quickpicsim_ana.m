@@ -181,9 +181,9 @@ do_FOCUSAXIS = 0;
 do_QEB_FEZ = 0;
 do_beam_phase_space_plot = 1;
 do_translopeEB = 1;
-%translopeEB_dz = -3; % dz [um] from center of box
-translopeEB_dz = 50; % dz [um] from center of box
-translopeEB_dz = 'ion_head'; % if 'ion_head' use (z1_ion_head + z_ion_head)/2 to calculate z-slice of EB calc
+translopeEB_dz = -3; % dz [um] from center of box
+%translopeEB_dz = 50; % dz [um] from center of box
+%translopeEB_dz = 'ion_head'; % if 'ion_head' use (z1_ion_head + z_ion_head)/2 to calculate z-slice of EB calc
 %translopeEB_dz = 'hose_tail'; % if 'hose_tail' use (z1_tail_start + z_tail_end)/2 to calculate z-slice of EB calc
 
 % more plot options
